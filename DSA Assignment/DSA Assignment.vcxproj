@@ -128,6 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DSA Assignment.cpp" />
+    <ClCompile Include="LinkedListNormal.cpp" />
+    <ClCompile Include="LinkedListTrackPost.cpp" />
+    <ClCompile Include="SystemHashTable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="asciiRenderer\ascii_art-1.3\ascii_art.h" />
+    <ClInclude Include="asciiRenderer\ascii_art-1.3\stb_image.h" />
+    <ClInclude Include="SystemHashTable.h" />
+    <ClInclude Include="LinkedListNormal.h" />
+    <ClInclude Include="LinkedListTrackPost.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

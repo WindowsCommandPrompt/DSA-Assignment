@@ -18,5 +18,31 @@
     <ClCompile Include="DSA Assignment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LinkedListTrackPost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkedListNormal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemHashTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LinkedListTrackPost.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asciiRenderer\ascii_art-1.3\ascii_art.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="asciiRenderer\ascii_art-1.3\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListNormal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemHashTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
