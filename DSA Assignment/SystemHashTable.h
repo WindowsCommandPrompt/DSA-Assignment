@@ -1,10 +1,11 @@
 #pragma once 
 
-
+using namespace std;
 #include <string>
 
 typedef int KeyType; 
-typedef std::string ValueType; 
+typedef string ValueType; 
+const int MAX_ITEMS = 9999999;
 
 //A hash table is just basically an array of linked list....
 
@@ -17,7 +18,7 @@ private:
 		Node* next;	// pointer pointing to next item with same search key
 	};
 
-	Node* items[9999999];
+	Node* items[MAX_ITEMS];
 	int  size;			// number of items in the Dictionary
 
 public:

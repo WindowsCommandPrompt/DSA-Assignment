@@ -1,3 +1,5 @@
+// Completed by Li Zheyun 
+
 #include "LinkedListNormal.h"
 #include <string> 
 #include <iterator> 
