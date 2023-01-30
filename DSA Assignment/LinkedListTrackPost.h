@@ -1,33 +1,19 @@
 #pragma once
 
 #include <string> 
+#include "Post.h"
+
+//WARNING: THIS LINKED LIST IS ONLY MEANT FOR TRACKING THE POSTS THAT THE USER HAS MADE SO FAR. 
  
 class LinkedListTrackPost
 {
-private: 
-	struct DateTimeFormat {
-		unsigned int hour; 
-		unsigned int minute;
-		unsigned int seconds; 
-		unsigned int day; 
-		unsigned int month; 
-		unsigned long year; 
-	};
-
-	struct Post {
-		std::string title;						//The title of the post that the user has posted in the forum...
-		std::string postContentsAsText;			//The contents of the post....
-	};
-
-	struct PostNode {
-		unsigned long numberOfLikes;			//Number of likes that the post has attained so far....
-		unsigned long numberOfThumbsUp;			//Number of thumbs up that the post has attained so far....
+private:
+	struct Node {
 		Post post; 
-		DateTimeFormat timePosted;				//The date and time where the post was created by the user....
-		PostNode* nextPost;						//pointer to the next post.
+		Node* next; 
 	};
 
-	PostNode* firstPost; 
+    Node* firstPost; 
 	int posts = 0; 
 
 public: 
@@ -37,6 +23,7 @@ public:
 	bool remove(const std::string title, const std::string postContentsAsText) noexcept;	//A method to remove an item from the back of the linked list 
 	int length(void); 
 	bool isEmpty(void); 
+	Post get(int index); 
 	std::string to_string(const LinkedListTrackPost curr); 
 	bool equals(const LinkedListTrackPost other); 
 	Post searchUsingSequentialSearch(Post item); 

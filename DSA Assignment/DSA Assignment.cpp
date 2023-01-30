@@ -6,13 +6,16 @@
 #include <sstream> 
 #include <iomanip> 
 #include "LinkedListNormal.h" 
+#include "SystemHashTable.h"
+#include "rapidjson/document.h"
 #include <string>
-#include <chrono>
 
 #define IS_LOGGED_IN false
 
 using namespace std; 
-using namespace std::chrono; 
+using namespace rapidjson; 
+
+static string user = ""; 
 
 void login(void) {
     //Print out some kind of menu like thing
@@ -28,51 +31,183 @@ void login(void) {
     cout << "===========================================================" << endl; 
 } 
 
+//main user interface once the 
+void mainMenu(void) {
+    cout << "Hello, " << user << endl; 
+    cout << "===========================================================" << endl; 
+    cout << "# [0] Logout                                              #" << endl; 
+    cout << "# [1] Create a new thread                                 #" << endl;
+    cout << "# [2] Create a new post                                   #" << endl;
+    cout << "# [3] Browse post                                         #" << endl; 
+    cout << "===========================================================" << endl; 
+}
+
 int main(void)
 {
+    ofstream ToFile("users.txt");               //To write to 
+    ifstream MyReadFile("users.txt");           //To read from 
 
-    ofstream ToFile("users.txt");   //where user information is stored. 
-    ToFile << "C++ reading file not working";
-    ToFile.close();
+    //ofstream ToFile("users.txt");   //where user information is stored. 
+    //ToFile << "C++ reading file not working";
+    //ToFile.close();
+    //string myText;
+    //ifstream MyReadFile("users.txt");
+    //// Use a while loop together with the getline() function to read the file line by line
+    //while (getline(MyReadFile, myText)) {
+    //    // Output the text from the file
+    //    cout << myText;
+    //}
+    //// Close the file
+    //MyReadFile.close();
+    //ToFile <<  { 
+//         "0": [
+//             { 
+//                "user": "username", 
+//                "posts": [ 
+//                    { 
+//                        "noOfLikes": 12, 
+//                        "noOfThumbsUp": 12, 
+//                        "title": "some kind of title", 
+//                        "content": "post contents as a text....", 
+//                        "topic": "what topic it belongs to.
+//                    }, 
+//                    { 
+//                       . . . . . 
+//                    } 
+//                ]
+//             }, 
+//             { 
+//                "user": "anotherUsername", 
+//                "posts": [                 ]
+//             } 
+//         ], 
+//         "1": null
+//      }
 
-    string myText;
-    ifstream MyReadFile("users.txt");
-    // Use a while loop together with the getline() function to read the file line by line
-    while (getline(MyReadFile, myText)) {
-        // Output the text from the file
-        cout << myText;
+
+    for (; ; ) {                    //Initiate an infinite loop. 
+        login();                    //Display the main menu to the user. 
+        cout << "Your choice: ";    //Prompting the user for his / her choice
+        string var = "";            //string variable to capture the user's choice
+        getline(cin, var);          //Accepts spacings between words....
+        try {
+            int a = stoi(var);      //try converting the string to an integer. 
+            if (a == 0) {           //quit the program if the user selects 0. 
+                return;
+            }
+            else if (a == 1) {
+                //Login to an account
+                cout << "Username: " << endl;
+                string username = ""; string password = "";
+                getline(cin, username);
+                cout << "Password: " << endl;
+                getline(cin, password);
+            }
+            else if (a == 2) {
+                //Temporarily disable an account....
+            }
+            else if (a == 3) {
+                Reprompt: 
+                    //Create a new account.....
+                    cout << "Please enter the username of your new account: ";
+                    string newAccountUsername = "";                                 //Initialize a new variable.
+                    getline(cin, newAccountUsername);
+                    //need to look through the list of usernames under users.txt and check for existance of the user.
+                    string stringifiedJSONDocumentLine = "";
+                    LinkedListNormal fileContents = LinkedListNormal();
+                    while (getline(MyReadFile, stringifiedJSONDocumentLine)) {
+                        fileContents.add(stringifiedJSONDocumentLine);
+                    }
+                    MyReadFile.close();                         //close the file after reading....
+                    if (fileContents.isEmpty()) {               //if list is empty means no users yet can just add.
+                        SystemHashTable newHashTable = SystemHashTable();
+                        for (; ; ) {
+                            cout << "Please enter a password for your new account: ";
+                            string pre = "";
+                            getline(cin, pre);
+                            cout << "Please enter your password again: ";
+                            string post = "";
+                            getline(cin, post);
+                            if (pre == post) {
+                                newHashTable.add(newAccountUsername, pre);
+                                break;
+                            }
+                        }
+                        break; //Break to the main menu for the user to sign in using the account.
+                    }
+                    else {
+                        //Analyze the fileContents....
+                        string open = "";
+                        for (int i = 0; i < fileContents.length(); i++) {
+                            open += fileContents.get(i);
+                        }
+                        const char* hashTableAsString = open.c_str();
+                        Document document = Document();
+                        document.Parse(hashTableAsString);
+                        if (document.IsObject()) {
+                            //loop through the array and look through its properties....
+                            for (SizeType i = 0; ; i++) {
+                                try {
+                                    if (document[std::to_string(i).c_str()].IsArray()) {
+                                        for (SizeType j = 0; j < document[std::to_string(i).c_str()].Size(); ++j) {
+                                            if (document[std::to_string(i).c_str()][j]["username"] == newAccountUsername) {
+                                                //duplicate username has been found and the program will tell the user that he / she needs to enter a new username again. 
+
+                                                cout << "Duplicate username found within the database! Please try again" << endl; 
+                                                goto Reprompt; 
+                                            }
+                                        }
+                                    }
+
+                                }
+                                catch (exception e) { goto PasswordPrompt; }
+                            }
+                        }
+                    PasswordPrompt: 
+                        cout << "Please enter a password: " << endl; 
+
+                    }
+
+            }
+            else if (a == 4) {
+                //Reset password
+            }
+            else if (a == 5) {
+                //Privacy policy
+            }
+        }
+        catch (exception e) {
+            const char* varcstr = var.c_str();
+            for (int i = 0; i < strlen(varcstr); i++) {
+
+            }
+        }
     }
-
-    // Close the file
-    MyReadFile.close();
-}
-    //for (; ; ) {   
-    //    login(); 
-    //    cout << "Your choice: "; 
-    //    string var = ""; 
-    //    getline(cin, var);          //Accepts spacings between words....
-    //    try {
-    //        int a = stoi(var); 
-    //        if (a == 0) {
-    //            break; 
-    //        }
-    //        else if (a == 1) {
-    //            //Login to an account
-    //            cout << "Username: " << endl; 
-    //            string username = ""; string password = ""; 
-    //            getline(cin, username); 
-    //            cout << "Password: " << endl; 
-    //            getline(cin, password); 
-    //        }
-    //        else if (a == 2) {
-    //            //Temporarily disable an account....
-    //        }
-    //        else if (a == 3) {
-    //            //Create a new account.....
-    //            cout << "Please enter the username of your new account: "; 
-    //            string newAccountUsername = ""; 
-    //            getline(cin, newAccountUsername); 
-    //            //need to look through the list of usernames under users.txt and check for existance of the user.
+//     { 
+//         "0": [
+//             { 
+//                "user": "username", 
+//                "posts": [ 
+//                    { 
+//                        "noOfLikes": 12, 
+//                        "noOfThumbsUp": 12, 
+//                        "title": "some kind of title", 
+//                        "content": "post contents as a text....", 
+//                        "topic": "what topic it belongs to.
+//                    }, 
+//                    { 
+//                       . . . . . 
+//                    } 
+//                ]
+//             }, 
+//             { 
+//                "user": "anotherUsername", 
+//                "posts": [                 ]
+//             } 
+//         ], 
+//         "1": null
+//      }
+//}
 
 
     
@@ -80,52 +215,6 @@ int main(void)
 
 
 
-    //            ToFile << "sfsidfjsfjsljdflsdfjssddsdsfdsfsdsdf"; 
-    //        }
-    //        else if (a == 4) {
-    //            //Reset password
-    //        }
-    //        else if (a == 5) {
-    //            //Privacy policy
-    //        }
-    //    }
-    //    catch (exception e) {
-    //        const char* varcstr = var.c_str(); 
-    //        for (int i = 0; i < strlen(varcstr); i++) {
-    //            
-    //        }
-    //    }
-    //}
-
-
-    
-
-
-
-
-    //if (FromFile.is_open()) {
-    //    // Get the file size
-    //    FromFile.seekg(0, FromFile.end);
-    //    int size = FromFile.tellg();
-    //    FromFile.seekg(0, FromFile.beg);
-
-    //    // Allocate memory for the buffer
-    //    char* buffer = new char[size];
-
-    //    // Read the data into the buffer
-    //    FromFile.read(buffer, size);
-
-    //    // Do something with the data
-    //    for (int i = 0; i < size; i++) {
-    //        cout << buffer[i];
-    //    }
-
-    //    // Close the file
-    //    FromFile.close();
-    //} else {
-    //    cout << "Unable to open file" << endl;
-    //}
-    //return 0;
    
 
 

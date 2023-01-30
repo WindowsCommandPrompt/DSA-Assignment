@@ -33,15 +33,24 @@
     <ClCompile Include="Post.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Comment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp-1.9.5\src\jsontestrunner\main.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="jsoncpp-1.9.5\src\test_lib_json\main.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinkedListTrackComments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinkedListTrackPost.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="asciiRenderer\ascii_art-1.3\ascii_art.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="asciiRenderer\ascii_art-1.3\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LinkedListNormal.h">
@@ -56,5 +65,20 @@
     <ClInclude Include="Post.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Comment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jsoncpp-1.9.5\include\json\value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListTrackComments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -127,23 +127,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Comment.cpp" />
     <ClCompile Include="DSA Assignment.cpp" />
+    <ClCompile Include="jsoncpp-1.9.5\src\jsontestrunner\main.cpp" />
+    <ClCompile Include="jsoncpp-1.9.5\src\test_lib_json\main.cpp" />
     <ClCompile Include="LinkedListNormal.cpp" />
+    <ClCompile Include="LinkedListTrackComments.cpp" />
     <ClCompile Include="LinkedListTrackPost.cpp" />
     <ClCompile Include="Post.cpp" />
     <ClCompile Include="Topic.cpp" />
     <ClCompile Include="SystemHashTable.cpp" />
+    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="asciiRenderer\ascii_art-1.3\ascii_art.h" />
-    <ClInclude Include="asciiRenderer\ascii_art-1.3\stb_image.h" />
+    <ClInclude Include="Comment.h" />
+    <ClInclude Include="jsoncpp-1.9.5\include\json\value.h" />
+    <ClInclude Include="LinkedListTrackComments.h" />
     <ClInclude Include="Post.h" />
     <ClInclude Include="SystemHashTable.h" />
     <ClInclude Include="LinkedListNormal.h" />
     <ClInclude Include="LinkedListTrackPost.h" />
     <ClInclude Include="topic.h" />
+    <ClInclude Include="User.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\rapidjson.1.0.2\build\native\rapidjson.targets" Condition="Exists('..\packages\rapidjson.1.0.2\build\native\rapidjson.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\rapidjson.1.0.2\build\native\rapidjson.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\rapidjson.1.0.2\build\native\rapidjson.targets'))" />
+  </Target>
 </Project>
