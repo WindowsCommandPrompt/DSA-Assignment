@@ -82,12 +82,12 @@ public:
 			Node* current = this->firstNode; //pointing towards the first node
 			Node* newNode = new Node; //create a temporary node which stores the node that we are going to insert into the linked list; 
 			newNode->item = item; //assign the item segment of that node with the item
-			while (current->next != NULL) {
+			while (current->next != nullptr) {
 				current = current->next; //IS THIS THE TRAVERSAL PART????? 
 			}
 			//once the program breaks out of the while loop, we should arrive at the end of the linked list (current) that is a null
 			current->next = newNode; //point to the newNode
-			newNode->next = NULL;
+			newNode->next = nullptr;
 		}
 		this->size++;
 		return true;
@@ -122,6 +122,7 @@ public:
 					}
 					newNode->item = item; //set item to attribute of newNode to item as supplied in the parameter
 					prev->next = newNode;
+					++this->size;
 					newNode->next = after;
 				}
 				else {
