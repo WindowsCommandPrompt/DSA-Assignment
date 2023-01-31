@@ -127,26 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Comment.cpp" />
     <ClCompile Include="DSA Assignment.cpp" />
-    <ClCompile Include="jsoncpp-1.9.5\src\jsontestrunner\main.cpp" />
-    <ClCompile Include="jsoncpp-1.9.5\src\test_lib_json\main.cpp" />
-    <ClCompile Include="LinkedListNormal.cpp" />
-    <ClCompile Include="LinkedListTrackComments.cpp" />
-    <ClCompile Include="LinkedListTrackPost.cpp" />
-    <ClCompile Include="Post.cpp" />
-    <ClCompile Include="Topic.cpp" />
     <ClCompile Include="SystemHashTable.cpp" />
-    <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Comment.h" />
-    <ClInclude Include="jsoncpp-1.9.5\include\json\value.h" />
-    <ClInclude Include="LinkedListTrackComments.h" />
     <ClInclude Include="Post.h" />
     <ClInclude Include="SystemHashTable.h" />
-    <ClInclude Include="LinkedListNormal.h" />
-    <ClInclude Include="LinkedListTrackPost.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="topic.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>

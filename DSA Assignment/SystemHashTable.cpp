@@ -1,6 +1,12 @@
 // Completed by Ho Min Teck and Li Zhe Yun 
 #include "SystemHashTable.h"
 #include <string>
+#include <fstream> 
+#include <iostream>
+#include <sstream>
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
 SystemHashTable::SystemHashTable(void) {
 	//array but using linked list from LinkedListTrackPost.
@@ -11,6 +17,10 @@ SystemHashTable::SystemHashTable(void) {
 SystemHashTable::~SystemHashTable(void) 
 {
 
+}
+
+int SystemHashTable::charvalue(char c) {
+	return (int)c; 
 }
 
 // hash function
@@ -34,23 +44,19 @@ int SystemHashTable::hash(string key)
 	return 	characters % MAX_ITEMS;
 }
 
-bool SystemHashTable::add(string newUser, string password)
-{
-	// create a new node 
-	Node* newNode = new Node;
+bool SystemHashTable::add(string newUser, string password, LinkedList<Post> posts) {
 	// Compute the index using hash function 
 	int index = hash(newUser);
-	if (this->items[index] == nullptr){					//Check if there is any users at an index position.... 
+	if (this->items[index] == nullptr) {					//Check if there is any users at an index position.... 
 		Node* newNode = new Node;  						// Create a new node
-		SystemUser user = SystemUser(); 
-		user.setPassword(password); 
-		user.setUsername(newUser); 
-		newNode->user = user;					// Set list at index to point to new node
+		SystemUser user = SystemUser(newUser, password, posts);
+		newNode->value = user;					// Set list at index to point to new node
 		newNode->key = newUser;
 		newNode->next = nullptr;
+		this->items[index] = newNode;
 	}
 	else {												//if there is a user at an index position, simply attach the user to the end of the linked list .....
-		Node* current = items[index];					//point to the first item in the array..
+		Node* current = this->items[index];					//point to the first item in the array..
 		while (current->next != nullptr) {					// while not at last node  
 			// iterate to the next node
 			current = current->next;
@@ -59,10 +65,37 @@ bool SystemHashTable::add(string newUser, string password)
 		// create a new node
 		Node* newNode = new Node;
 		newNode->key = newUser;
-		SystemUser user = SystemUser(); 
-		user.setPassword(password); 
-		user.setUsername(newUser); 
-		newNode->user = user;
+		SystemUser user = SystemUser(newUser, password, posts);
+		newNode->value = user;
+		newNode->next = nullptr;
+	}
+	return true;
+}
+
+bool SystemHashTable::add(string newUser, string password)
+{
+	// Compute the index using hash function 
+	int index = hash(newUser);
+	if (this->items[index] == nullptr){					//Check if there is any users at an index position.... 
+		Node* newNode = new Node;  						// Create a new node
+		SystemUser user = SystemUser(newUser, password); 
+		newNode->value = user;					// Set list at index to point to new node
+		newNode->key = newUser;
+		newNode->next = nullptr;
+		this->items[index] = newNode; 
+	}
+	else {												//if there is a user at an index position, simply attach the user to the end of the linked list .....
+		Node* current = this->items[index];					//point to the first item in the array..
+		while (current->next != nullptr) {					// while not at last node  
+			// iterate to the next node
+			current = current->next;
+		}
+		//we are now at the end of the linked list....(technically)
+		// create a new node
+		Node* newNode = new Node;
+		newNode->key = newUser;
+		SystemUser user = SystemUser(newUser, password); 
+		newNode->value = user;
 		newNode->next = nullptr;
 	}
 	return true;
@@ -109,105 +142,111 @@ bool SystemHashTable::remove(string key)
 
 SystemUser SystemHashTable::get(string key)
 {
-	return this->items[hash(key)]->user; 
-}
-
-string SystemHashTable::to_string(void) {
-	string output = "{";
-	//null, true, false
-	/* 
-	* rough structure of our json document. 
-	  { 
-	     "hashValue": [
-			 { 
-				"user": "username", 
-				"posts": [ 
-					{ 
-						"noOfLikes": 12, 
-						"noOfThumbsUp": 12, 
-						"title": "some kind of title", 
-						"content": "post contents as a text....", 
-						"topic": "what topic it belongs to.
-					}, 
-					{ 
-					   . . . . . 
-					} 
-				]
-			 }, 
-			 { 
-				"user": "anotherUsername", 
-				"posts": [ 
-
-				]
-			 } 
-		 ], 
-		 "hashValue": null
-	  }
-	*/
-	for (int i = 0; i < MAX_ITEMS; i++) {
-		if (this->items[i] != nullptr) {
-			output += ("\"" + std::to_string(i) + "\":" + (this->items[i] == nullptr ? "null" : ([this, i] {
-				string resultArrayAsString = "["; 
-				Node* firstNode = this->items[i]; //start from the first node within the linked list
-				//user property settled....
-				resultArrayAsString += "{"; 
-				resultArrayAsString += ("\"user: \"" + firstNode->key + "\""); 
-				resultArrayAsString += ",";
-				//posts property settled. 
-				string linkedListPostsAsString = string("[");
-				if (firstNode->item.isEmpty()) return "null";
-				else {
-					LinkedListTrackPost allPosts = firstNode->item;
-					for (int i = 0; ; i++) {
-						try {
-							Post post = allPosts.get(i);
-							linkedListPostsAsString += "{";
-							linkedListPostsAsString += ("\"noOfLikes\"" + std::to_string(post.getNumberOfLikes()) + ",");
-							linkedListPostsAsString += ("\"noOfThumbsUp\"" + std::to_string(post.getNumberOfThumbsUp()) + ",");
-							linkedListPostsAsString += ("\"title\"" + post.getTitle() + ",");
-							linkedListPostsAsString += ("\"content\"" + post.getContents());
-							linkedListPostsAsString += "}";
-						}
-						catch (exception e) {
-							break;
-						}
-						linkedListPostsAsString += ",";
-					}
-				}
-				linkedListPostsAsString += "]}";
-				resultArrayAsString += ("\"posts: \"" + linkedListPostsAsString);
-				//Check for other users that are under the same index... 
-				while (firstNode->next != nullptr) {
-					resultArrayAsString += ",{";			//Append a comma if we are continuing on with the while loop.... 
-					firstNode = firstNode->next; 
-					resultArrayAsString += ("\"user: \"" + firstNode->key + "\"");
-					resultArrayAsString += ","; 
-					string linkedListPostsAsString = string("[");
-					if (firstNode->item.isEmpty()) return "null";
-					else {
-						LinkedListTrackPost allPosts = firstNode->item;
-						for (int i = 0; ; i++) {
-							try {
-								Post post = allPosts.get(i);
-								linkedListPostsAsString += "{";
-								linkedListPostsAsString += ("\"noOfLikes\"" + std::to_string(post.getNumberOfLikes()) + ",");
-								linkedListPostsAsString += ("\"noOfThumbsUp\"" + std::to_string(post.getNumberOfThumbsUp()) + ",");
-								linkedListPostsAsString += ("\"title\"" + post.getTitle() + ",");
-								linkedListPostsAsString += ("\"content\"" + post.getContents());
-								linkedListPostsAsString += "}";
-							}
-							catch (exception e) {
-								break;
-							}
-							linkedListPostsAsString += ",";
-						}
-					}
-					linkedListPostsAsString += "]}";
-					resultArrayAsString += ("\"posts: \"" + linkedListPostsAsString);
-				}
-				resultArrayAsString += "]"; //end of appending post items into the string.... (for hashValue array)
-				return resultArrayAsString; 
-			})()));
+	if (this->items[hash(key)] != nullptr) {
+		Node* firstItem = this->items[hash(key)]; 
+		if (firstItem->key == key) return firstItem->value; 
+		while (firstItem->next != nullptr) {
+			firstItem = firstItem->next; 
+			if (firstItem->key == key) return firstItem->value; 
 		}
 	}
+}
+
+void SystemHashTable::updateFile(void) { 
+	rapidjson::Document newJSONDocument;
+	newJSONDocument.SetArray();                             //Create an array because we are storing a list of users.
+	for (int i = 0; i < MAX_ITEMS; i++) {
+		//start looping through the entire array.... 
+		if (this->items[i] != nullptr) { //if its not a null linked list
+			Node* firstNode = this->items[i];
+			rapidjson::Value user;
+			user.SetObject();
+			rapidjson::Value username;
+			username.SetString(rapidjson::GenericStringRef<char>(firstNode->key.c_str()));
+			rapidjson::Value userInfo;
+			userInfo.SetObject();
+			rapidjson::Value password;
+			rapidjson::Value accountUsername;
+			rapidjson::Value listOfPosts;
+			password.SetString(rapidjson::GenericStringRef<char>(firstNode->value.password.c_str()));
+			accountUsername.SetString(rapidjson::GenericStringRef<char>(firstNode->value.username.c_str()));
+			listOfPosts.SetArray();
+			LinkedList<Post> posts = firstNode->value.posts;
+			if (!posts.isEmpty()) {
+				for (int i = 0; i < posts.length(); i++) {
+					rapidjson::Value post;
+					post.SetObject();
+					rapidjson::Value numberOfLikes;
+					rapidjson::Value numberOfThumbsUp;
+					rapidjson::Value title;
+					rapidjson::Value contents;
+					numberOfLikes.SetInt64(posts.get(i).noOfLikes);
+					numberOfThumbsUp.SetInt64(posts.get(i).noOfThumbsUp);
+					title.SetString(rapidjson::GenericStringRef<char>(posts.get(i).title.c_str()));
+					contents.SetString(rapidjson::GenericStringRef<char>(posts.get(i).contents.c_str()));
+					post.AddMember("NumberOfLikes", numberOfLikes, newJSONDocument.GetAllocator());
+					post.AddMember("NumberOfThumbsUp", numberOfThumbsUp, newJSONDocument.GetAllocator());
+					post.AddMember("Title", title, newJSONDocument.GetAllocator());
+					post.AddMember("Contents", contents, newJSONDocument.GetAllocator());
+					listOfPosts.PushBack(post, newJSONDocument.GetAllocator());
+				}
+			}
+			userInfo.AddMember("Username", accountUsername, newJSONDocument.GetAllocator());
+			userInfo.AddMember("Password", password, newJSONDocument.GetAllocator());
+			userInfo.AddMember("Posts", listOfPosts, newJSONDocument.GetAllocator());
+			user.AddMember("Username", username, newJSONDocument.GetAllocator());
+			user.AddMember("User", userInfo, newJSONDocument.GetAllocator());
+			newJSONDocument.PushBack(user, newJSONDocument.GetAllocator());
+			//repeat for all other items in the linked list? 
+			while (firstNode->next != nullptr) {
+				firstNode = firstNode->next;
+				rapidjson::Value user;
+				user.SetObject();
+				rapidjson::Value username;
+				username.SetString(rapidjson::GenericStringRef<char>(firstNode->key.c_str()));
+				rapidjson::Value userInfo;
+				userInfo.SetObject();
+				rapidjson::Value password;
+				password.SetString(rapidjson::GenericStringRef<char>(firstNode->value.password.c_str()));
+				rapidjson::Value accountUsername;
+				accountUsername.SetString(rapidjson::GenericStringRef<char>(firstNode->value.username.c_str()));
+				rapidjson::Value listOfPosts;
+				listOfPosts.SetArray();
+				LinkedList<Post> posts = firstNode->value.posts;
+				if (!posts.isEmpty()) {
+					for (int i = 0; i < posts.length(); i++) {
+						rapidjson::Value post;
+						post.SetObject();
+						rapidjson::Value numberOfLikes;
+						rapidjson::Value numberOfThumbsUp;
+						rapidjson::Value title;
+						rapidjson::Value contents;
+						numberOfLikes.SetInt64(posts.get(i).noOfLikes);
+						numberOfThumbsUp.SetInt64(posts.get(i).noOfThumbsUp);
+						title.SetString(rapidjson::GenericStringRef<char>(posts.get(i).title.c_str()));
+						contents.SetString(rapidjson::GenericStringRef<char>(posts.get(i).contents.c_str()));
+						post.AddMember("NumberOfLikes", numberOfLikes, newJSONDocument.GetAllocator());
+						post.AddMember("NumberOfThumbsUp", numberOfThumbsUp, newJSONDocument.GetAllocator());
+						post.AddMember("Title", title, newJSONDocument.GetAllocator());
+						post.AddMember("Contents", contents, newJSONDocument.GetAllocator());
+						listOfPosts.PushBack(post, newJSONDocument.GetAllocator());
+					}
+				}
+				userInfo.AddMember("Username", accountUsername, newJSONDocument.GetAllocator());
+				userInfo.AddMember("Password", password, newJSONDocument.GetAllocator());
+				userInfo.AddMember("Posts", listOfPosts, newJSONDocument.GetAllocator());
+				user.AddMember("Username", username, newJSONDocument.GetAllocator());
+				user.AddMember("User", userInfo, newJSONDocument.GetAllocator());
+				newJSONDocument.PushBack(user, newJSONDocument.GetAllocator());
+			}
+		}
+	} 
+	//start saving the json document into the text file. 
+	rapidjson::StringBuffer buffer;
+	rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+	newJSONDocument.Accept(writer);
+	string jsonString = buffer.GetString();
+	ofstream datFile("post.dat");
+	datFile << jsonString;
+	datFile.close();
 }

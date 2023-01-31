@@ -1,24 +1,33 @@
 #pragma once
 
 #include <string> 
-#include "LinkedListTrackPost.h"
+#include "LinkedList.h"
+#include "Post.h"
+
+using namespace std; 
 
 //Data class for the User object.....
 class SystemUser
 {
-private: 
+public:
+	SystemUser(void) {
 
-		LinkedListTrackPost posts; 
-		string username; 
-		string password; 
+	}
+	SystemUser(string username, string password) {
+		this->posts = LinkedList<Post>(); 
+		this->username = username; 
+		this->password = password; 
+	}				//Create a new user object
+	SystemUser(string username, string password, LinkedList<Post> posts) {
+		this->posts = posts; 
+		this->username = username; 
+		this->password = password; 
+	}
+	~SystemUser(void) {
 
-public: 
-	SystemUser(void);				//Create a new user object
-	~SystemUser(void);				//Destroy a user; 
-	void setUsername(string username); 
-	void setPassword(string password); 
-	void getPassword(string& var); 
-	void getUsername(string& var); 
-	void getPosts(LinkedListTrackPost& posts); 
+	}											
+	LinkedList<Post> posts;
+	string username;
+	string password;
 };
 

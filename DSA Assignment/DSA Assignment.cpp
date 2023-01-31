@@ -4,11 +4,15 @@
 #include <iostream>
 #include <fstream> 
 #include <sstream> 
-#include <iomanip> 
-#include "LinkedListNormal.h" 
+#include <Windows.h>
+#include "Comment.h"
+#include "LinkedList.h" 
 #include "SystemHashTable.h"
 #include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 #include <string>
+
 
 #define IS_LOGGED_IN false
 
@@ -42,47 +46,38 @@ void mainMenu(void) {
     cout << "===========================================================" << endl; 
 }
 
-int main(void)
+void main(void)
 {
-    ofstream ToFile("users.txt");               //To write to 
-    ifstream MyReadFile("users.txt");           //To read from 
+    //// create a JSON object
+    //Document jsonDoc;
+    //jsonDoc.SetObject();
+    //Value user;
+    //user.SetString("Peter Dan");
+    //jsonDoc.AddMember("User", user, jsonDoc.GetAllocator());
+    //Value PostThumbsUp;
+    //PostThumbsUp.SetInt(12);
+    //jsonDoc.AddMember("Post Thumbs Up", PostThumbsUp, jsonDoc.GetAllocator());
+    //Value PostLikes;
+    //PostLikes.SetInt(12);
+    //jsonDoc.AddMember("Post Likes", PostLikes, jsonDoc.GetAllocator());
+    //Value title;
+    //title.SetString("Implementing Hash Table");
+    //jsonDoc.AddMember("Title", title, jsonDoc.GetAllocator());
+    //Value content;
+    //content.SetString("Hash table is a type of data structures...");
+    //jsonDoc.AddMember("Content", content, jsonDoc.GetAllocator());
+    //Value topic;
+    //topic.SetString("C++");
+    //jsonDoc.AddMember("Topic", topic, jsonDoc.GetAllocator());
+    //StringBuffer buffer;
+    //Writer<StringBuffer> writer(buffer);
+    //jsonDoc.Accept(writer);
+    //string jsonString = buffer.GetString();
+    //ofstream datFile;
+    //datFile.open("post.dat");
+    //datFile << jsonString;
+    //datFile.close();
 
-    //ofstream ToFile("users.txt");   //where user information is stored. 
-    //ToFile << "C++ reading file not working";
-    //ToFile.close();
-    //string myText;
-    //ifstream MyReadFile("users.txt");
-    //// Use a while loop together with the getline() function to read the file line by line
-    //while (getline(MyReadFile, myText)) {
-    //    // Output the text from the file
-    //    cout << myText;
-    //}
-    //// Close the file
-    //MyReadFile.close();
-    //ToFile <<  { 
-//         "0": [
-//             { 
-//                "user": "username", 
-//                "posts": [ 
-//                    { 
-//                        "noOfLikes": 12, 
-//                        "noOfThumbsUp": 12, 
-//                        "title": "some kind of title", 
-//                        "content": "post contents as a text....", 
-//                        "topic": "what topic it belongs to.
-//                    }, 
-//                    { 
-//                       . . . . . 
-//                    } 
-//                ]
-//             }, 
-//             { 
-//                "user": "anotherUsername", 
-//                "posts": [                 ]
-//             } 
-//         ], 
-//         "1": null
-//      }
 
 
     for (; ; ) {                    //Initiate an infinite loop. 
@@ -97,77 +92,247 @@ int main(void)
             }
             else if (a == 1) {
                 //Login to an account
-                cout << "Username: " << endl;
+                system("cls"); 
+                Sleep(500); 
+                cout << "Username: ";
                 string username = ""; string password = "";
                 getline(cin, username);
-                cout << "Password: " << endl;
+                cout << "Password: ";
                 getline(cin, password);
+                ifstream something("post.dat");
+                LinkedList<string> fileContents = LinkedList<string>();
+                string internal = "";
+                if (something.is_open()) {
+                    while (getline(something, internal)) {
+                        fileContents.add(internal);
+                    }
+                    for (int i = 0; i < fileContents.length(); i++) {
+                        rapidjson::Document document = rapidjson::Document();
+                        document.Parse(fileContents.get(i).c_str());
+                        if (document.IsArray()) {
+                            //loop through the array. 
+                            for (SizeType j = 0; j < document.Size(); j++) {
+                                if (document[j]["Username"].GetString() == username) {
+                                    //Username matches!!
+                                    //now look for the account password. 
+                                    if (document[j]["User"].IsObject()) {
+                                        if (document[j]["User"]["Password"].GetString() == password) {
+                                            cout << "Welcome " << document[j]["User"]["Username"].GetString() << "!" << endl;
+                                            user = document[j]["User"]["Username"].GetString();
+                                            system("cls"); 
+                                            Sleep(1000); 
+                                            for (; ; ) {
+                                                mainMenu(); 
+                                                cout << "What do you plan to do today? " << endl; 
+                                                string decision = ""; 
+                                                getline(cin, decision); 
+                                                if (decision == "0") {      //Sign out of account.....
+                                                    user = ""; 
+                                                    goto LOGOUT; 
+                                                }
+                                                else if (decision == "1") {     //Create a new thread......
+
+                                                }
+                                                else if (decision == "2") {     //Create a post.....
+                                                    system("cls"); 
+                                                    Sleep(500); 
+                                                    string postTitle = ""; 
+                                                    string postContents = ""; 
+                                                    cout << "Please enter the title of your post: " << endl; 
+                                                    cout << "Key in 'EXIT' or 'exit' or 'Exit' to exit to the main menu." << endl; 
+                                                    getline(cin, postTitle); 
+                                                    if (postTitle == "EXIT" || postTitle == "exit" || postTitle == "Exit") {
+                                                        system("cls"); 
+                                                        Sleep(500); 
+                                                        continue; 
+                                                    }
+                                                    else {
+                                                        system("cls"); 
+                                                        Sleep(500); 
+                                                        cout << "Please enter the contents of your post: " << endl; 
+                                                        getline(cin, postContents); 
+                                                        cout << "YOUR POST: " << endl; 
+                                                        cout << "=====================================================" << endl; 
+                                                        cout << "Title: " << postTitle << endl; 
+                                                        cout << "Contents: " << postContents << endl; 
+                                                        cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl; 
+                                                        cout << "[0] Exit to the main menu (Your changes will be lost)" << endl; 
+                                                        cout << "[1] Edit title" << endl; 
+                                                        cout << "[2] Edit contents" << endl;
+                                                        cout << "[3] Post" << endl;
+                                                        cout << "=====================================================" << endl; 
+                                                        cout << "Your choice?: "; 
+                                                        string choice = ""; 
+                                                        getline(cin, choice); 
+                                                        if (choice == "0") {
+                                                            continue; 
+                                                        }
+                                                        else if (choice == "3") {
+                                                            //update the user.
+                                                            system("cls"); 
+                                                            Sleep(500); 
+                                                            cout << "POSTING...." << endl; 
+                                                            SystemHashTable snapshot = SystemHashTable();
+                                                            for (int j = 0; j < document.Size(); j++) {
+                                                                string username = document[j]["User"]["Username"].GetString();
+                                                                string password = document[j]["User"]["Password"].GetString();
+                                                                LinkedList<Post> copy = LinkedList<Post>();
+                                                                if (document[j]["User"]["Posts"].IsArray()) {
+                                                                    for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
+                                                                        copy.add(Post(
+                                                                            document[j]["User"]["Posts"]["Title"].GetString(),
+                                                                            document[j]["User"]["Posts"]["Contents"].GetString(),
+                                                                            document[j]["User"]["Posts"]["NumberOfLikes"].GetInt64(),
+                                                                            document[j]["User"]["Posts"]["NumberOfThumbsUp"].GetInt64()
+                                                                        ));
+                                                                    }
+                                                                }
+                                                                snapshot.add(username, password, copy);
+                                                            }
+                                                            cout << "Initial posts length: " << snapshot.get(username).posts.length() << endl; 
+                                                            LinkedList<Post> d = snapshot.get(username).posts; 
+                                                            d.add(Post(postTitle, postContents, 0, 0));
+                                                            
+                                                            cout << snapshot.get(username).posts.length() << endl; 
+
+
+
+
+                                                            //snapshot.updateFile();
+                                                        }
+                                                    }
+                                                }
+                                                else if (decision == "3") {
+                                                    //Browse posts that the user has made. 
+                                                    SystemHashTable snapshot = SystemHashTable(); 
+                                                    for (int j = 0; j < document.Size(); j++) {
+                                                        string username = document[j]["User"]["Username"].GetString();
+                                                        string password = document[j]["User"]["Password"].GetString();
+                                                        LinkedList<Post> copy = LinkedList<Post>();
+                                                        if (document[j]["User"]["Posts"].IsArray()) {
+                                                            for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
+                                                                copy.add(Post(
+                                                                    document[j]["User"]["Posts"]["Title"].GetString(),
+                                                                    document[j]["User"]["Posts"]["Contents"].GetString(),
+                                                                    document[j]["User"]["Posts"]["NumberOfLikes"].GetInt64(),
+                                                                    document[j]["User"]["Posts"]["NumberOfThumbsUp"].GetInt64()
+                                                                ));
+                                                            }
+                                                        }
+                                                        snapshot.add(username, password, copy);
+                                                    }
+                                                    LinkedList<Post> postsList = snapshot.get(username).posts; 
+                                                    if (postsList.isEmpty()) {
+                                                        cout << "No posts to display for now" << endl; 
+                                                    }
+                                                    else {
+                                                        for (int i = 0; i < postsList.length(); i++) {
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            cout << "File is modified! Please reinstall the application again!" << endl; 
+                            goto LOGOUT; 
+                        }
+                    }
+                    cout << "Sorry, wrong username or password! Please try again!" << endl; 
+                }
+            LOGOUT: 
+                system("cls"); 
+                Sleep(1000); 
             }
             else if (a == 2) {
                 //Temporarily disable an account....
             }
             else if (a == 3) {
-                Reprompt: 
-                    //Create a new account.....
-                    cout << "Please enter the username of your new account: ";
-                    string newAccountUsername = "";                                 //Initialize a new variable.
-                    getline(cin, newAccountUsername);
-                    //need to look through the list of usernames under users.txt and check for existance of the user.
-                    string stringifiedJSONDocumentLine = "";
-                    LinkedListNormal fileContents = LinkedListNormal();
-                    while (getline(MyReadFile, stringifiedJSONDocumentLine)) {
-                        fileContents.add(stringifiedJSONDocumentLine);
+            REDO:
+                //Create a new account.....
+                system("cls"); 
+                Sleep(500); 
+                cout << "Please enter the username of your new account: ";
+                SystemHashTable snapshot = SystemHashTable();
+                string newAccountUsername = "";  //Initialize a new username variable. 
+                string newAccountPassword = ""; //Initialize a new password variable.
+                getline(cin, newAccountUsername);
+                std::cout << "Your username: " << newAccountUsername << std::endl; 
+                ifstream something("post.dat");
+                LinkedList<string> fileContents = LinkedList<string>();
+                string internal = "";
+                if (something.is_open()) {
+                    while (getline(something, internal)) {
+                        fileContents.add(internal);
                     }
-                    MyReadFile.close();                         //close the file after reading....
-                    if (fileContents.isEmpty()) {               //if list is empty means no users yet can just add.
-                        SystemHashTable newHashTable = SystemHashTable();
-                        for (; ; ) {
-                            cout << "Please enter a password for your new account: ";
-                            string pre = "";
-                            getline(cin, pre);
-                            cout << "Please enter your password again: ";
-                            string post = "";
-                            getline(cin, post);
-                            if (pre == post) {
-                                newHashTable.add(newAccountUsername, pre);
-                                break;
+                    for (int i = 0; i < fileContents.length(); i++) {
+                        rapidjson::Document document = rapidjson::Document(); 
+                        document.Parse(fileContents.get(i).c_str());
+                        if (document.IsArray()) {
+                            for (SizeType j = 0; j < document.Size(); j++) {
+                                if (document[j]["Username"].GetString() == newAccountUsername) {
+                                    cout << "Duplicate username found! Please try entering another username!" << endl; 
+                                    Sleep(1000); 
+                                    goto REDO; 
+                                } 
                             }
-                        }
-                        break; //Break to the main menu for the user to sign in using the account.
-                    }
-                    else {
-                        //Analyze the fileContents....
-                        string open = "";
-                        for (int i = 0; i < fileContents.length(); i++) {
-                            open += fileContents.get(i);
-                        }
-                        const char* hashTableAsString = open.c_str();
-                        Document document = Document();
-                        document.Parse(hashTableAsString);
-                        if (document.IsObject()) {
-                            //loop through the array and look through its properties....
-                            for (SizeType i = 0; ; i++) {
-                                try {
-                                    if (document[std::to_string(i).c_str()].IsArray()) {
-                                        for (SizeType j = 0; j < document[std::to_string(i).c_str()].Size(); ++j) {
-                                            if (document[std::to_string(i).c_str()][j]["username"] == newAccountUsername) {
-                                                //duplicate username has been found and the program will tell the user that he / she needs to enter a new username again. 
-
-                                                cout << "Duplicate username found within the database! Please try again" << endl; 
-                                                goto Reprompt; 
-                                            }
-                                        }
-                                    }
-
+                            for (; ; ) {
+                                //Now prompt for the password....
+                                std::cout << "Please enter the password for your new account: ";
+                                getline(cin, newAccountPassword);
+                                if (newAccountPassword.length() >= 8 && newAccountPassword.length() < 30) {
+                                    system("cls"); 
+                                    Sleep(500); 
+                                    break;
                                 }
-                                catch (exception e) { goto PasswordPrompt; }
+                                cout << "Sorry, your account password should be between 8 and 30 characters." << endl;
+                                Sleep(2000);
+                                system("cls");
+                                Sleep(500);
                             }
+                            for (int j = 0; j < document.Size(); j++) {
+                                string username = document[j]["User"]["Username"].GetString();
+                                string password = document[j]["User"]["Password"].GetString();
+                                LinkedList<Post> copy = LinkedList<Post>();
+                                if (document[j]["User"]["Posts"].IsArray()) {
+                                    for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
+                                        copy.add(Post(
+                                            document[j]["User"]["Posts"]["Title"].GetString(),
+                                            document[j]["User"]["Posts"]["Contents"].GetString(),
+                                            document[j]["User"]["Posts"]["NumberOfLikes"].GetInt64(),
+                                            document[j]["User"]["Posts"]["NumberOfThumbsUp"].GetInt64()
+                                        ));
+                                    }
+                                }
+                                snapshot.add(username, password, copy);
+                                snapshot.updateFile();
+                            } 
                         }
-                    PasswordPrompt: 
-                        cout << "Please enter a password: " << endl; 
-
                     }
-
+                    snapshot.add(newAccountUsername, newAccountPassword); 
+                    snapshot.updateFile(); 
+                }
+                else {   //if file does not exist
+                    cout << "File does not exist!" << endl; 
+                    SystemHashTable userList = SystemHashTable();           //Initialize a new hash table 
+                    string newAccountPassword = "";
+                    for (; ; ) {
+                        cout << "Please enter the password of your new account: ";
+                        getline(cin, newAccountPassword);
+                        if (newAccountPassword.length() < 8 && newAccountPassword.length() > 30) {
+                            cout << "Please make sure that the length of your password is between 8 (inclusive) and 30 characters(inclusive)" << endl;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    userList.add(newAccountUsername, newAccountPassword);
+                    userList.updateFile();
+                }
             }
             else if (a == 4) {
                 //Reset password
@@ -183,31 +348,8 @@ int main(void)
             }
         }
     }
-//     { 
-//         "0": [
-//             { 
-//                "user": "username", 
-//                "posts": [ 
-//                    { 
-//                        "noOfLikes": 12, 
-//                        "noOfThumbsUp": 12, 
-//                        "title": "some kind of title", 
-//                        "content": "post contents as a text....", 
-//                        "topic": "what topic it belongs to.
-//                    }, 
-//                    { 
-//                       . . . . . 
-//                    } 
-//                ]
-//             }, 
-//             { 
-//                "user": "anotherUsername", 
-//                "posts": [                 ]
-//             } 
-//         ], 
-//         "1": null
-//      }
-//}
+} 
+
 
 
     

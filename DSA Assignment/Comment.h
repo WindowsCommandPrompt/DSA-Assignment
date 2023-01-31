@@ -1,22 +1,26 @@
 #pragma once
 #include<string>
-using namespace std;
+
+using namespace std; 
 //This file will be responsible for the tracking of the comments (reply).
 class Comment
 {
-private: 
+public: 
+    Comment(void) {
+
+   }
+   Comment(string contents, string user) {
+	   this->contents = contents; 
+	   this->users = user; 
+	   this->noOfLikes = 0; 
+	   this->noOfThumbsUp = 0; 
+   }
+   ~Comment(void) {
+
+   }
    string contents;
    string users;
    int noOfLikes; 
    int noOfThumbsUp; 
-public: 
-	int getNumberOfLikes(void); 
-	int getNumberOfThumbsUp(void); 
-	string getContents(void);
-	string getUsers(void);
-	void setNumberOfLikes(int a); 
-	void setNumberOfThumbsUp(int a); 
-	void setContent(string content); 
-	void setUsers(string user);
 };
 

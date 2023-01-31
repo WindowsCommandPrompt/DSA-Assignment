@@ -6,20 +6,27 @@ using namespace std;
 
 //This file will be responsible for the tracking of the posts.
 class Post {
-private: 
-	
+public: 
+	Post(void) {
+		 
+	}
+	Post(string title, string contents, int noOfLikes, int noOfThumbsUp) {
+		this->title = title; 
+		this->contents = contents; 
+		this->noOfLikes = noOfLikes; 
+		this->noOfThumbsUp = noOfThumbsUp; 
+	}
+	Post(string title, string contents) {
+		this->title = title; 
+		this->contents = contents; 
+		this->noOfLikes = 0; 
+		this->noOfThumbsUp = 0; 
+	}
+	~Post(void) {
+
+	}
 	int noOfLikes; 
 	int noOfThumbsUp; 
 	string title; 
 	string contents; 
-
-public: 
-	int getNumberOfLikes(void); 
-	int getNumberOfThumbsUp(void); 
-	string getTitle(void); 
-	string getContents(void); 
-	void setNumberOfLikes(int a); 
-	void setNumberOfThumbsUp(int a); 
-	void setTitle(string title); 
-	void setContent(string content); 
 };

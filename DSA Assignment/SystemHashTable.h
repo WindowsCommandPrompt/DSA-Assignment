@@ -2,11 +2,9 @@
 
 using namespace std;
 #include <string>
-#include "LinkedListTrackPost.h"
 #include "User.h" 
 
-typedef LinkedListTrackPost Posts; 
-const int MAX_ITEMS = 9999999;
+const int MAX_ITEMS = 999;
 
 //A hash table is just basically an array of linked list....
 
@@ -14,9 +12,9 @@ class SystemHashTable {
 private:
 	struct Node
 	{
-		string  key;   // search key   (stays within the array) 
-		SystemUser user; 
-		Node* next;	// pointer pointing to next item with same search key
+		string key;   // search key   (stays within the array) 
+		SystemUser value; 
+		Node* next;
 	};
 
 	Node* items[MAX_ITEMS];
@@ -26,10 +24,11 @@ public:
 	SystemHashTable(void);					//Initialize a new "database" 
 	// destructor
 	~SystemHashTable(void);					//destructors.....
-	int hash(string username);						//hash function to hash the user's username 
-	bool add(string username, string password);	//add a new user into the hash table. 
-	bool remove(string username);					//delete a user from the hash table
-	SystemUser get(string username);					//get the list of posts via the user... 
-	string to_string(void);
+	int hash(string value);						//hash function to hash the user's value 
+	bool add(string value, string password, LinkedList<Post> posts); 
+	bool add(string value, string password);	//add a new user into the hash table. 
+	bool remove(string value);					//delete a user from the hash table
+	SystemUser get(string value);					//get the list of posts via the user... 
 	int charvalue(char c);
+	void updateFile(void); 
 };

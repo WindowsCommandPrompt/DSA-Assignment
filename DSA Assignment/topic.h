@@ -1,20 +1,27 @@
 #pragma once
 #include <string>
+
+using namespace std; 
+
 // This file will be responsible for the tracking of the topics
 class Topic {
-private:
+public:
+    Topic(void) {
+
+    }
+    Topic(string TopicTitle, string contents)
+    {
+        this->TopicTitle = TopicTitle;
+        this->contents = contents;
+        this->noOfPosts = 0;
+        this->noOfLikes = 0;
+    }
+    ~Topic(void) {
+
+    }
     int noOfPosts;
-    int noOfLikes; // will this be needed?
+    int noOfLikes; 
     string TopicTitle;
     string contents;
 
-public:
-    int getNumberOfPosts(void);
-    int getNumberOfLikes(void);
-    string getTopicTitle(void);
-    string getContents(void);
-    void setNumberOfPosts(int newPost);
-    void setNumberOfLikes(int a);
-    void setTopicTitle(string newTopicTitle);
-    void setContents(string content);
 };
