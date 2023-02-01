@@ -187,13 +187,13 @@ void main(void)
                                                                         ));
                                                                     }
                                                                 }
-                                                                snapshot.add(username, password, copy);
+                                                                snapshot.add(username, password, copy); // erase the previous post - bug 
                                                             }
                                                             cout << "Initial posts length: " << snapshot.get(username).posts.length() << endl; 
                                                             LinkedList<Post>& d = snapshot.get(username).posts; 
                                                             d.add(Post(postTitle, postContents, 0, 0));
                                                             
-                                                            cout << "New posts length" << snapshot.get(username).posts.length() << endl;
+                                                            cout << "New posts length\n" << snapshot.get(username).posts.length() << endl;
 
 
 
