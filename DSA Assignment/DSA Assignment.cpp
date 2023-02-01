@@ -190,7 +190,7 @@ void main(void)
                                                                 snapshot.add(username, password, copy);
                                                             }
                                                             cout << "Initial posts length: " << snapshot.get(username).posts.length() << endl; 
-                                                            LinkedList<Post> d = snapshot.get(username).posts; 
+                                                            LinkedList<Post>& d = snapshot.get(username).posts; 
                                                             d.add(Post(postTitle, postContents, 0, 0));
                                                             
                                                             cout << "New posts length" << snapshot.get(username).posts.length() << endl;
