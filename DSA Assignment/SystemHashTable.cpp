@@ -140,7 +140,7 @@ bool SystemHashTable::remove(string key)
 	else return false; 
 }
 
-SystemUser SystemHashTable::get(string key)
+SystemUser& SystemHashTable::get(string key)
 {
 	if (this->items[hash(key)] != nullptr) {
 		Node* firstItem = this->items[hash(key)]; 

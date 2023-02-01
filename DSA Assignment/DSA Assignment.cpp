@@ -193,7 +193,7 @@ void main(void)
                                                             LinkedList<Post> d = snapshot.get(username).posts; 
                                                             d.add(Post(postTitle, postContents, 0, 0));
                                                             
-                                                            cout << snapshot.get(username).posts.length() << endl; 
+                                                            cout << "New posts length" << snapshot.get(username).posts.length() << endl;
 
 
 
