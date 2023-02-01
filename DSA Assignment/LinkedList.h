@@ -12,17 +12,24 @@ private:
 		Node* next; 
 	};
 
+
 	Node* firstNode; 
 	int size; 
 
 public:
-
+	LinkedList(const LinkedList&) = default; 
+	LinkedList& operator=(const LinkedList&) = default; 
 	//LINKED LIST DEFINITION....
 	LinkedList(void) {
 		this->firstNode = nullptr;
 		this->size = 0;
 	}
-
+	LinkedList(LinkedList&& list)
+	{
+		firstNode = list.firstNode;
+		list.firstNode = NULL;
+		size = list.size;
+	}
 	~LinkedList(void) {
 		do {
 			if (this->size > 1) {

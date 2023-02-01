@@ -10,6 +10,8 @@ using namespace std;
 class SystemUser
 {
 public:
+	SystemUser(const SystemUser&) = default;
+	SystemUser& operator=(const SystemUser&) = default;
 	SystemUser(void) {
 
 	}
@@ -22,6 +24,12 @@ public:
 		this->posts = posts; 
 		this->username = username; 
 		this->password = password; 
+	}
+	SystemUser(SystemUser&& user)
+	{
+		this->posts = std::move(user.posts);
+		this->username = std::move(user.username);
+		this->password = std::move(user.password);
 	}
 	~SystemUser(void) {
 

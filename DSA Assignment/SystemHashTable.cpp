@@ -1,4 +1,6 @@
 // Completed by Ho Min Teck and Li Zhe Yun 
+#define RAPIDJSON_HAS_STDSTRING 1
+
 #include "SystemHashTable.h"
 #include <string>
 #include <fstream> 
@@ -7,6 +9,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+
 
 SystemHashTable::SystemHashTable(void) {
 	//array but using linked list from LinkedListTrackPost.
@@ -49,10 +52,10 @@ bool SystemHashTable::add(string newUser, string password, LinkedList<Post> post
 	int index = hash(newUser);
 	if (this->items[index] == nullptr) {					//Check if there is any users at an index position.... 
 		Node* newNode = new Node;  						// Create a new node
-		SystemUser user = SystemUser(newUser, password, posts);
-		newNode->value = user;					// Set list at index to point to new node
+		SystemUser user(newUser, password, posts);
+		newNode->value = std::move(user);					// Set list at index to point to new node
 		newNode->key = newUser;
-		newNode->next = nullptr;
+		newNode->next = nullptr; 
 		this->items[index] = newNode;
 	}
 	else {												//if there is a user at an index position, simply attach the user to the end of the linked list .....
@@ -65,8 +68,8 @@ bool SystemHashTable::add(string newUser, string password, LinkedList<Post> post
 		// create a new node
 		Node* newNode = new Node;
 		newNode->key = newUser;
-		SystemUser user = SystemUser(newUser, password, posts);
-		newNode->value = user;
+		SystemUser user(newUser, password, posts);
+		newNode->value = std::move(user);
 		newNode->next = nullptr;
 	}
 	return true;
@@ -154,6 +157,7 @@ SystemUser& SystemHashTable::get(string key)
 
 void SystemHashTable::updateFile(void) { 
 	rapidjson::Document newJSONDocument;
+	auto& allocator = newJSONDocument.GetAllocator(); 
 	newJSONDocument.SetArray();                             //Create an array because we are storing a list of users.
 	for (int i = 0; i < MAX_ITEMS; i++) {
 		//start looping through the entire array.... 
@@ -182,8 +186,8 @@ void SystemHashTable::updateFile(void) {
 					rapidjson::Value contents;
 					numberOfLikes.SetInt64(posts.get(i).noOfLikes);
 					numberOfThumbsUp.SetInt64(posts.get(i).noOfThumbsUp);
-					title.SetString(rapidjson::GenericStringRef<char>(posts.get(i).title.c_str()));
-					contents.SetString(rapidjson::GenericStringRef<char>(posts.get(i).contents.c_str()));
+					title.SetString(posts.get(i).title.c_str(), allocator);
+					contents.SetString(posts.get(i).contents.c_str(), allocator);
 					post.AddMember("NumberOfLikes", numberOfLikes, newJSONDocument.GetAllocator());
 					post.AddMember("NumberOfThumbsUp", numberOfThumbsUp, newJSONDocument.GetAllocator());
 					post.AddMember("Title", title, newJSONDocument.GetAllocator());
@@ -223,8 +227,8 @@ void SystemHashTable::updateFile(void) {
 						rapidjson::Value contents;
 						numberOfLikes.SetInt64(posts.get(i).noOfLikes);
 						numberOfThumbsUp.SetInt64(posts.get(i).noOfThumbsUp);
-						title.SetString(rapidjson::GenericStringRef<char>(posts.get(i).title.c_str()));
-						contents.SetString(rapidjson::GenericStringRef<char>(posts.get(i).contents.c_str()));
+						title.SetString(posts.get(i).title.c_str(), allocator);
+						contents.SetString(posts.get(i).contents.c_str(), allocator);
 						post.AddMember("NumberOfLikes", numberOfLikes, newJSONDocument.GetAllocator());
 						post.AddMember("NumberOfThumbsUp", numberOfThumbsUp, newJSONDocument.GetAllocator());
 						post.AddMember("Title", title, newJSONDocument.GetAllocator());
