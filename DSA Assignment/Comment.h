@@ -15,6 +15,12 @@ public:
 	   this->noOfLikes = 0; 
 	   this->noOfThumbsUp = 0; 
    }
+   Comment(string contents, string user, int noOfLikes, int noOfThumbsUp) {
+	   this->contents = contents; 
+	   this->users = user; 
+	   this->noOfLikes = noOfLikes; 
+	   this->noOfThumbsUp = noOfThumbsUp; 
+   }
    ~Comment(void) {
 
    }
