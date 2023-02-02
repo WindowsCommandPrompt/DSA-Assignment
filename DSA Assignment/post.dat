@@ -1,1 +1,1 @@
-[{"Username":"something1","User":{"Username":"something1","Password":"something1","Posts":[]}}]
+[{"Username":"something1","User":{"Username":"something1","Password":"something1","Posts":[{"NumberOfLikes":0,"NumberOfThumbsUp":0,"Title":"this title","Contents":"this content","Comments":[]}]}},{"Username":"something2","User":{"Username":"something2","Password":"something2","Posts":[]}}]

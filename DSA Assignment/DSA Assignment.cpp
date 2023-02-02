@@ -717,9 +717,9 @@ void main(void)
                                         }
                                     }
                                 }
-                                snapshot.add(username, password, copy);
                                 cout << "DF" << endl;
                                 Sleep(2000);
+                                snapshot.add(username, password, copy);
                                 snapshot.updateFile();
                             }
                         }
@@ -756,9 +756,17 @@ void main(void)
             }
             else if (a == 4) {
                 //Reset password
+                system("cls"); 
+                Sleep(500); 
+                cout << "Please enter the username of your account: " << endl; 
+                string usernameReset = ""; 
+
             }
             else if (a == 5) {
                 //Privacy policy
+                cout << "==================PRIVACY POLICY===================" << endl; 
+                cout << "1) No part of this software shall be distributed without prior permission from the developers." << endl; 
+
             }
         }
         catch (exception e) {
