@@ -2,7 +2,9 @@
 
 using namespace std;
 #include <string>
+#include "Topic.h" 
 #include "User.h" 
+#include "LinkedList.h"
 
 const int MAX_ITEMS = 999;
 
