@@ -26,6 +26,22 @@ int SystemHashTable::charvalue(char c) {
 	return (int)c; 
 }
 
+bool SystemHashTable::contains(string key) {
+	int index = this->hash(key); 
+	if (this->items[index] == nullptr) return false; 
+	else {
+		Node* firstNode = this->items[index]; 
+		if (firstNode->key == key) return true; 
+		else {
+			while (firstNode->next != nullptr) {
+				firstNode = firstNode->next; 
+				if (firstNode->key == key) return true; 
+			}
+		}
+	}
+	return false; 
+}
+
 // hash function
 int SystemHashTable::hash(string key) 
 {
