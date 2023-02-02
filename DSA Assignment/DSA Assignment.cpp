@@ -8,6 +8,7 @@
 #include <sstream> 
 #include <Windows.h>
 #include <format>
+#include "Topic.h"
 #include "Comment.h"
 #include "LinkedList.h" 
 #include "systemHashTable.h"
@@ -219,7 +220,42 @@ void main(void)
                                                     goto LOGOUT;
                                                 }
                                                 else if (decision == "1") {     //Create a new thread......
-
+                                                    std::system("cls");
+                                                    Sleep(500);
+                                                    string topicTitle = "";
+                                                    string topicContents = "";
+                                                    cout << "Please enter the title of your topic: " << endl;
+                                                    cout << "Key in 'EXIT' or 'exit' or 'Exit' to exit to the main menu." << endl;
+                                                    getline(cin, topicTitle);
+                                                    if (topicTitle == "EXIT" || topicTitle == "exit" || topicTitle == "Exit") {
+                                                        std::system("cls");
+                                                        Sleep(500);
+                                                        continue;
+                                                    }
+                                                    else {
+                                                        std::system("cls");
+                                                        Sleep(500);
+                                                        cout << "Please enter the contents of your topic: " << endl;
+                                                        getline(cin, topicContents);
+                                                        cout << "YOUR TOPIC: " << endl;
+                                                        cout << "=====================================================" << endl;
+                                                        cout << "Title: " << topicTitle << endl;
+                                                        cout << "Contents: " << topicContents << endl;
+                                                        cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                        cout << "[0] Exit to the main menu (Your changes will be lost)" << endl;
+                                                        cout << "[1] Post" << endl;
+                                                        cout << "=====================================================" << endl;
+                                                        std::cout << "Your choice?: ";
+                                                        string choice = "";
+                                                        getline(cin, choice);
+                                                        if (choice == "0") {
+                                                            continue;
+                                                        }
+                                                        else if (choice == "1") {
+                                                         
+                                                        }
+                                                    }
+                                                    
                                                 }
                                                 else if (decision == "2") {     //Create a post.....
                                                     std::system("cls");
@@ -776,4 +812,3 @@ void main(void)
             }
         }
     } 
-} 
