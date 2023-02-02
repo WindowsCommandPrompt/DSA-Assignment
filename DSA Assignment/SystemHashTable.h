@@ -26,6 +26,7 @@ public:
 	~SystemHashTable(void);					//destructors.....
 	int hash(string value);						//hash function to hash the user's value 
 	bool add(string value, string password, LinkedList<Post> posts); 
+	bool add(string value, string password, LinkedList<Topic> topics); // to be validated, LinkedList<Topic> topics? is it correct?
 	bool add(string value, string password);	//add a new user into the hash table. 
 	bool remove(string value);					//delete a user from the hash table
 	SystemUser& get(string value);					//get the list of posts via the user... 
