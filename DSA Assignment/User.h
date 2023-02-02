@@ -35,6 +35,8 @@ public:
 
 	}											
 	LinkedList<Post> posts;
+	LinkedList<Topic> topics;
+	LinkedList<Comment> comments;
 	string username;
 	string password;
 };

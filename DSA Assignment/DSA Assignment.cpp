@@ -49,7 +49,7 @@ void mainMenu(void) {
     std::cout << "Hello, " << user << endl; 
     std::cout << "===========================================================" << endl; 
     std::cout << "# [0] Logout                                              #" << endl; 
-    std::cout << "# [1] Create a new thread                                 #" << endl;
+    std::cout << "# [1] Create a new topic                                  #" << endl;
     std::cout << "# [2] Create a new post                                   #" << endl;
     std::cout << "# [3] Browse my posts                                     #" << endl; 
     std::cout << "# [4] Explore other people's posts                        #" << endl; 
@@ -71,7 +71,8 @@ void expandComments(void) {
     std::cout << "# [2] Disike a post                                       #" << endl;
     std::cout << "# [3] Add a thumbs up                                     #" << endl; 
     std::cout << "# [4] Remove a thumbs up                                  #" << endl; 
-    std::cout << "# [5] Expand comments                                     #" << endl; 
+    std::cout << "# [5] Expand comments                                     #" << endl;
+    std::cout << "# [6] Reply to post                                       #" << endl;
     std::cout << "===========================================================" << endl; 
 }
 
@@ -255,18 +256,13 @@ void main(void)
                                                             system("cls");
                                                             Sleep(500);
                                                             cout << "POSTING YOUR TOPIC.." << endl;
-                                                            SystemHashTable snapshot = SystemHashTable();
-                                                            for (int c = 0; c < document.Size(); c++) {
-                                                                string username = document[c]["User"]["Username"].GetString();
-                                                                string password = document[c]["User"]["Password"].GetString();
-                                                                snapshot.add(username, password);
-                                                            }
-                                                            
+                                                            SystemHashTable snapshot = convertToHashTable(document);
+                                                            snapshot.get(username).topics.add(Topic(topicTitle, topicContents)); //add the new topic accordingly.
                                                             snapshot.updateFile();
                                                             std::system("cls");
                                                             Sleep(500);
                                                             ifAfterAdd = true;
-
+                                                            
                                                         }
                                                     }
 
@@ -550,6 +546,33 @@ void main(void)
                                                                                                 cout << "Number of thumbs up: " << std::to_string(listOfComments.get(i).noOfThumbsUp) << endl;
                                                                                             }
                                                                                             cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                                                        }
+                                                                                    }
+                                                                                    else if (selectionToInteger == 6) {
+                                                                                        cout << "==========================REPLY TO A COMMENT: ============================" << endl;
+                                                                                        string commentsContents;
+                                                                                        cout << "Please enter your comments" << endl;
+                                                                                        getline(cin, commentsContents);
+                                                                                        std::cout << "YOUR COMMENT: " << endl;
+                                                                                        std::cout << "=====================================================" << endl;
+                                                                                       
+                                                                                        std::cout << "Contents: " << commentsContents << endl;
+                                                                                        std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                                                        std::cout << "[0] Exit to the main menu (Your changes will be lost)" << endl;
+                                                                                        
+                                                                                        std::cout << "[1] Edit contents" << endl;
+                                                                                        std::cout << "[2] Post" << endl;
+                                                                                        std::cout << "=====================================================" << endl;
+                                                                                        std::cout << "Your choice?: ";
+                                                                                        string choice = "";
+                                                                                        getline(cin, choice);
+                                                                                        if (choice == "2") {
+                                                                                            // update the user
+                                                                                            std::system("cls");
+                                                                                            Sleep(500);
+                                                                                            std::cout << "POSTING YOUR COMMENT.." << endl;
+                                                                                            SystemHashTable snapshot = convertToHashTable(document);
+                                                                                            
                                                                                         }
                                                                                     }
                                                                                     else {

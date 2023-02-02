@@ -28,7 +28,8 @@ public:
 	// destructor
 	~SystemHashTable(void);					//destructors.....
 	int hash(string value);						//hash function to hash the user's value 
-	bool add(string value, string password, LinkedList<Post> posts); 
+	bool add(string value, string password, LinkedList<Post> posts);
+	bool add(string value, string password, LinkedList<Topic> topics);
 	bool add(string value, string password);	//add a new user into the hash table. 
 	bool remove(string value);					//delete a user from the hash table
 	bool contains(string value); 
