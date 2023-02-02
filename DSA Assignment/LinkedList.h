@@ -27,28 +27,28 @@ public:
 	LinkedList(LinkedList&& list)
 	{
 		firstNode = list.firstNode;
-		list.firstNode = NULL;
+		list.firstNode = nullptr;
 		size = list.size;
 	}
 	~LinkedList(void) {
 		do {
-			if (this->size > 1) {
-				Node* currentNode = firstNode;
-				Node* prevNode = firstNode;
-				while (currentNode->next != nullptr) {
-					currentNode = currentNode->next;
-				}
-				while (prevNode->next != currentNode) {
-					prevNode = prevNode->next;
-				}
-				prevNode->next = nullptr;
-				delete currentNode;
-				--this->size;
-			}
-			else {
-				delete firstNode;
-				--this->size;
-			}
+			//if (this->size > 1) {
+			//	Node* currentNode = firstNode;
+			//	Node* prevNode = firstNode;
+			//	/*while (currentNode->next != nullptr) {
+			//		currentNode = currentNode->next;
+			//	}*/
+			//	/*while (prevNode->next != currentNode) {
+			//		prevNode = prevNode->next;
+			//	}
+			//	prevNode->next = nullptr;
+			//	delete currentNode;
+			//	--this->size;*/
+			//}
+			//else {
+			//	delete firstNode;
+			//	--this->size;
+			//}
 		} while (this->size > 0);
 	}
 
