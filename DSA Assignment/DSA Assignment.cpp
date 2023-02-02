@@ -11,7 +11,7 @@
 #include "Topic.h"
 #include "Comment.h"
 #include "LinkedList.h" 
-#include "systemHashTable.h"
+#include "SystemHashTable.h"
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
@@ -310,41 +310,7 @@ void main(void)
                                                             std::system("cls");
                                                             Sleep(500);
                                                             std::cout << "POSTING...." << endl;
-                                                            SystemHashTable snapshot = SystemHashTable();
-                                                            LinkedList<Post> copy;
-                                                            for (int j = 0; j < document.Size(); j++) {
-                                                                string username = document[j]["User"]["Username"].GetString();
-                                                                string password = document[j]["User"]["Password"].GetString();
-                                                                copy = LinkedList<Post>();              //Insert a blank linked list into the std::system hash table. Don't add anything
-                                                                snapshot.add(username, password, copy); // erase the previous post - bug 
-                                                            }
-                                                            //Start copying the contents into the hash table accordingly....
-                                                            if (document[j]["User"]["Posts"].IsArray()) {
-                                                                for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
-                                                                    snapshot.get(username).posts.add(Post(
-                                                                        document[j]["User"]["Posts"][k]["Title"].GetString(),
-                                                                        document[j]["User"]["Posts"][k]["Contents"].GetString(),
-                                                                        document[j]["User"]["Posts"][k]["NumberOfLikes"].GetInt64(),
-                                                                        document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64(),
-                                                                        LinkedList<Comment>()
-                                                                    ));
-                                                                }
-                                                                for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
-                                                                    if (document[j]["User"]["Posts"][k]["Comments"].IsArray()) {
-                                                                        for (int l = 0; l < snapshot.get(username).posts.length(); l++) {
-                                                                            //loop through the entire list of comments from the parsed JSON document. 
-                                                                            for (SizeType m = 0; m < document[j]["User"]["Posts"][k]["Comments"].Size(); m++) {
-                                                                                snapshot.get(username).posts.get(l).comment.add(Comment(
-                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["Contents"].GetString(),
-                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["Username"].GetString(),
-                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfLikes"].GetInt64(),
-                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfThumbsUp"].GetInt64()
-                                                                                ));
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
+                                                            SystemHashTable snapshot = convertToHashTable(document); 
                                                             snapshot.get(username).posts.add(Post(postTitle, postContents)); //add the new post accordingly.
                                                             snapshot.updateFile();
                                                             std::system("cls");
@@ -405,21 +371,21 @@ void main(void)
                                                             std::cout << "|Post number: " << std::to_string(i + 1) << "                                           |" << endl;
                                                             std::cout << "|Title: " << copy.get(i).title << ([&copy, i] {
                                                                 int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).title.c_str()) + (std::strlen("Post number:") - std::strlen("Title:"));
-                                                            string out = "";
-                                                            for (int internal = 0; internal <= lenWs; internal++) {
-                                                                out += " ";
-                                                            }
-                                                            out += "|";
-                                                            return out;
-                                                                })() << endl;
-                                                                std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
-                                                                    int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
                                                                 string out = "";
                                                                 for (int internal = 0; internal <= lenWs; internal++) {
                                                                     out += " ";
                                                                 }
                                                                 out += "|";
                                                                 return out;
+                                                                })() << endl;
+                                                                std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
+                                                                    int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
+                                                                    string out = "";
+                                                                    for (int internal = 0; internal <= lenWs; internal++) {
+                                                                        out += " ";
+                                                                    }
+                                                                    out += "|";
+                                                                    return out;
                                                                     })() << endl;
                                                                     std::cout << "|Number of likes: " << std::to_string(copy.get(i).noOfLikes) << "                                       |" << endl;
                                                                     std::cout << "|Number of thumbs up: " << std::to_string(copy.get(i).noOfThumbsUp) << "                                   |" << endl;
@@ -710,77 +676,34 @@ void main(void)
                 string internal = "";
                 if (something.is_open()) {
                     while (getline(something, internal)) {
-                        fileContents.add(internal);
+                        fileContents.add(internal); 
                     }
-                    for (int i = 0; i < fileContents.length(); i++) {
-                        rapidjson::Document document = rapidjson::Document();
-                        document.Parse(fileContents.get(i).c_str());
-                        if (document.IsArray()) {
-                            for (SizeType j = 0; j < document.Size(); j++) {
-                                if (document[j]["Username"].GetString() == newAccountUsername) {
-                                    std::cout << "Duplicate username found! Please try entering another username!" << endl;
-                                    Sleep(1000);
-                                    goto REDO;
-                                }
-                            }
-                            for (; ; ) {
-                                //Now prompt for the password....
-                                std::cout << "Please enter the password for your new account: ";
-                                getline(cin, newAccountPassword);
-                                if (newAccountPassword.length() >= 8 && newAccountPassword.length() < 30) {
-                                    std::system("cls");
-                                    Sleep(500);
-                                    break;
-                                }
-                                std::cout << "Sorry, your account password should be between 8 and 30 characters." << endl;
-                                Sleep(2000);
+                    rapidjson::Document document; 
+                    document.Parse(fileContents.get(0).c_str()); 
+                    SystemHashTable snapshot = convertToHashTable(document);
+                    if(snapshot.contains(newAccountUsername)) {
+                        std::cout << "Duplicate username found! Please try entering another username!" << endl;
+                        Sleep(1000);
+                        goto REDO;
+                    }
+                    else {
+                        for (; ; ) {
+                            std::cout << "Please enter the password for your new account: ";
+                            getline(cin, newAccountPassword);
+                            if (newAccountPassword.length() >= 8 && newAccountPassword.length() < 30) {
                                 std::system("cls");
                                 Sleep(500);
-                            }
-                            for (int j = 0; j < document.Size(); j++) {
-                                string username = document[j]["User"]["Username"].GetString();
-                                string password = document[j]["User"]["Password"].GetString();
-                                LinkedList<Post> copy = LinkedList<Post>();
-                                if (document[j]["User"]["Posts"].IsArray()) {
-                                    for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
-                                        copy.add(Post(
-                                            document[j]["User"]["Posts"][k]["Title"].GetString(),
-                                            document[j]["User"]["Posts"][k]["Contents"].GetString(),
-                                            document[j]["User"]["Posts"][k]["NumberOfLikes"].GetInt64(),
-                                            document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64(),
-                                            LinkedList<Comment>()
-                                        ));
-                                    }
-                                    for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
-                                        if (document[j]["User"]["Posts"][k]["Comments"].IsArray()) {
-                                            for (int l = 0; l < copy.length(); l++) {
-                                                //loop through the entire list of comments from the parsed JSON document. 
-                                                for (SizeType m = 0; m < document[j]["User"]["Posts"][k]["Comments"].Size(); m++) {
-                                                    copy.get(l).comment.add(Comment(
-                                                        document[j]["User"]["Posts"][k]["Comments"][m]["Contents"].GetString(),
-                                                        document[j]["User"]["Posts"][k]["Comments"][m]["Username"].GetString(),
-                                                        document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfLikes"].GetInt64(),
-                                                        document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfThumbsUp"].GetInt64()
-                                                    ));
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                snapshot.add(username, password, copy);
-                                cout << "DF" << endl;
-                                Sleep(2000);
-                                snapshot.updateFile();
+                                break;
                             }
                         }
+                        snapshot.add(newAccountUsername, newAccountPassword);
+                        snapshot.updateFile();
+                        std::system("cls");
+                        Sleep(500);
+                        std::cout << "Successfully registered your account! Please try to log into the std::system using your new username and password" << endl;
+                        Sleep(2000);
+                        std::system("cls");
                     }
-                    snapshot.add(newAccountUsername, newAccountPassword);
-                    snapshot.updateFile();
-                    std::system("cls");
-                    Sleep(500);
-                    std::cout << "Successfully registered your account! Please try to log into the std::system using your new username and password" << endl;
-                    Sleep(2000);
-                    std::system("cls");
                 }
                 else {   //if file does not exist
                     SystemHashTable userList = SystemHashTable();           //Initialize a new hash table 
@@ -806,9 +729,17 @@ void main(void)
             }
             else if (a == 4) {
                 //Reset password
+                system("cls");
+                Sleep(500);
+                cout << "Please enter the username of your account: " << endl;
+                string usernameReset = "";
+
             }
             else if (a == 5) {
                 //Privacy policy
+                cout << "==================PRIVACY POLICY===================" << endl;
+                cout << "1) No part of this software shall be distributed without prior permission from the developers." << endl;
+
             }
         }
         catch (exception e) {
@@ -818,5 +749,4 @@ void main(void)
             }
         }
     }
-
 }
