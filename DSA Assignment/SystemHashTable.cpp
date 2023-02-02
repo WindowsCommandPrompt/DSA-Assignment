@@ -192,6 +192,30 @@ void SystemHashTable::updateFile(void) {
 					post.AddMember("NumberOfThumbsUp", numberOfThumbsUp, newJSONDocument.GetAllocator());
 					post.AddMember("Title", title, newJSONDocument.GetAllocator());
 					post.AddMember("Contents", contents, newJSONDocument.GetAllocator());
+					//Add a new property that allows users to view their comments
+					rapidjson::Value commentsList;
+					commentsList.SetArray();		//Declare the value type as an array
+					LinkedList<Comment> listOfComments = firstNode->value.posts.get(i).comment; 
+					if (!listOfComments.isEmpty()) {
+						for (int j = 0; j < listOfComments.length(); j++) {		//Loop through the entire linked list of comments....
+							rapidjson::Value aSingleComment;
+							aSingleComment.SetObject();
+							rapidjson::Value commenterUsername;
+							rapidjson::Value postContent;
+							rapidjson::Value noOfLikes;
+							rapidjson::Value noOfThumbsUp;
+							commenterUsername.SetString(listOfComments.get(j).users, allocator);
+							postContent.SetString(listOfComments.get(j).contents, allocator);
+							noOfLikes.SetInt64(listOfComments.get(j).noOfLikes);
+							noOfThumbsUp.SetInt64(listOfComments.get(j).noOfThumbsUp);
+							aSingleComment.AddMember("Username", commenterUsername, newJSONDocument.GetAllocator());
+							aSingleComment.AddMember("Content", postContent, newJSONDocument.GetAllocator());
+							aSingleComment.AddMember("NumberOfLikes", noOfLikes, newJSONDocument.GetAllocator());
+							aSingleComment.AddMember("NumberOfThumbsUp", noOfThumbsUp, newJSONDocument.GetAllocator());
+							commentsList.PushBack(aSingleComment, newJSONDocument.GetAllocator());
+						}
+					}
+					post.AddMember("Comments", commentsList, newJSONDocument.GetAllocator());
 					listOfPosts.PushBack(post, newJSONDocument.GetAllocator());
 				}
 			}
@@ -233,6 +257,30 @@ void SystemHashTable::updateFile(void) {
 						post.AddMember("NumberOfThumbsUp", numberOfThumbsUp, newJSONDocument.GetAllocator());
 						post.AddMember("Title", title, newJSONDocument.GetAllocator());
 						post.AddMember("Contents", contents, newJSONDocument.GetAllocator());
+						//Add a new property that allows users to view their comments
+						rapidjson::Value commentsList; 
+						commentsList.SetArray();		//Declare the value type as an array
+						LinkedList<Comment> listOfComments = firstNode->value.posts.get(i).comment; 
+						if (!listOfComments.isEmpty()) {
+							for (int j = 0; j < listOfComments.length(); j++) {		//Loop through the entire linked list of comments....
+								rapidjson::Value aSingleComment;
+								aSingleComment.SetObject();
+								rapidjson::Value commenterUsername;
+								rapidjson::Value postContent;
+								rapidjson::Value noOfLikes;
+								rapidjson::Value noOfThumbsUp;
+								commenterUsername.SetString(listOfComments.get(j).users, allocator);
+								postContent.SetString(listOfComments.get(j).contents, allocator);
+								noOfLikes.SetInt64(listOfComments.get(j).noOfLikes);
+								noOfThumbsUp.SetInt64(listOfComments.get(j).noOfThumbsUp);
+								aSingleComment.AddMember("Username", commenterUsername, newJSONDocument.GetAllocator());
+								aSingleComment.AddMember("Content", postContent, newJSONDocument.GetAllocator());
+								aSingleComment.AddMember("NumberOfLikes", noOfLikes, newJSONDocument.GetAllocator());
+								aSingleComment.AddMember("NumberOfThumbsUp", noOfThumbsUp, newJSONDocument.GetAllocator());
+								commentsList.PushBack(aSingleComment, newJSONDocument.GetAllocator());
+							}
+						} 
+						post.AddMember("Comments", commentsList, newJSONDocument.GetAllocator()); 
 						listOfPosts.PushBack(post, newJSONDocument.GetAllocator());
 					}
 				}

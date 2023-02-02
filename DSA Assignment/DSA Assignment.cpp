@@ -22,6 +22,13 @@ using namespace rapidjson;
 
 static string user = ""; 
 static bool ifAfterAdd = false; 
+static bool ifUpdateNumberOfLikes = false; 
+static bool ifUpdateNumberOfLikesInv = false; 
+static bool quitToListOfPostsCreatedBySelf = false; 
+static bool justAddedLike = false; 
+static bool justRemovedLike = false; 
+static bool justAddedThumbsUp = false; 
+static int likeAppliesToPostNumber = 0; 
 
 void login(void) {
     //Print out some kind of menu like thing
@@ -53,8 +60,68 @@ void viewPostMenu(void) {
     std::cout << "===========================================================" << endl; 
     std::cout << "# [0] Exit to the main menu                               #" << endl; 
     std::cout << "# [1] Exit to posts list                                  #" << endl; 
-    std::cout << "# [OPEN] Open a post                                      #" << endl; 
+    std::cout << "# [2] Open a post                                         #" << endl; 
     std::cout << "===========================================================" << endl;
+}
+
+void expandComments(void) {
+    std::cout << "===========================================================" << endl; 
+    std::cout << "# [0] Exit to post                                        #" << endl; 
+    std::cout << "# [1] Like a post                                         #" << endl;
+    std::cout << "# [2] Disike a post                                       #" << endl;
+    std::cout << "# [3] Add a thumbs up                                     #" << endl; 
+    std::cout << "# [4] Remvoe a thumbs up                                  #" << endl; 
+    std::cout << "# [5] Expand comments                                     #" << endl; 
+    std::cout << "===========================================================" << endl; 
+}
+
+LinkedList<string> extractUsername(rapidjson::Document& rawData) {
+    LinkedList<string> usersOfThePlatform = LinkedList<string>(); 
+    if (rawData.IsArray()) {
+        for (SizeType i = 0; i < rawData.Size(); i++) {
+            usersOfThePlatform.add(rawData[i]["Username"].GetString()); 
+        }
+    }
+    return usersOfThePlatform; 
+}
+
+SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
+    SystemHashTable out = SystemHashTable(); 
+    if (rawData.IsArray()) {
+        for (SizeType i = 0; i < rawData.Size(); i++) {
+            out.add(
+                rawData[i]["User"]["Username"].GetString(),
+                rawData[i]["User"]["Password"].GetString(),
+                LinkedList<Post>() 
+            ); 
+            if (rawData[i]["User"]["Posts"].IsArray()) {
+                for (SizeType j = 0; j < rawData[i]["User"]["Posts"].Size(); j++) { 
+                    out.get(rawData[i]["Username"].GetString()).posts.add(
+                        Post(
+                            rawData[i]["User"]["Posts"][j]["Title"].GetString(),
+                            rawData[i]["User"]["Posts"][j]["Contents"].GetString(),
+                            rawData[i]["User"]["Posts"][j]["NumberOfLikes"].GetInt64(),
+                            rawData[i]["User"]["Posts"][j]["NumberOfThumbsUp"].GetInt64(),
+                            LinkedList<Comment>()
+                        )
+                    ); 
+                    if (rawData[i]["User"]["Posts"][j]["Comments"].IsArray()) {
+                        for (SizeType k = 0; k < rawData[i]["User"]["Posts"][j]["Comments"].Size(); k++) {; 
+                            out.get(rawData[i]["Username"].GetString()).posts.get(j).comment.add(
+                                Comment(
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["Content"].GetString(),
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["Username"].GetString(),
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfLikes"].GetInt64(),
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfThumbsUp"].GetInt64()
+                                )
+                            ); 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return out; 
 }
 
 void main(void)
@@ -88,8 +155,6 @@ void main(void)
     //datFile.open("post.dat");
     //datFile << jsonString;
     //datFile.close();
-
-
 
     for (; ; ) {                    //Initiate an infinite loop. 
         login();                    //Display the main menu to the user. 
@@ -134,17 +199,19 @@ void main(void)
                                             std::system("cls");
                                             Sleep(1000);
                                             for (; ; ) {
-                                                if (ifAfterAdd) {
+                                                if (ifAfterAdd || ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike || quitToListOfPostsCreatedBySelf) {
                                                     goto LOAD;
                                                 }
                                                 mainMenu();
                                                 std::cout << "What do you plan to do today? " << endl;
                                             LOAD:
                                                 string decision; 
-                                                if (!ifAfterAdd)
+                                                if (!ifAfterAdd && !ifUpdateNumberOfLikes && !ifUpdateNumberOfLikesInv && !justAddedLike && !justRemovedLike && !quitToListOfPostsCreatedBySelf)
                                                     decision = "";
                                                 else {
                                                     decision = "3";
+                                                    ifAfterAdd = false; 
+                                                    quitToListOfPostsCreatedBySelf = false; 
                                                     goto LOAD_SELF_POST;
                                                 } 
                                                 getline(cin, decision);
@@ -226,14 +293,12 @@ void main(void)
                                                         }
                                                         else if (choice == "3") {
                                                             //update the user.
-
                                                             std::system("cls");
                                                             Sleep(500);
                                                             std::cout << "POSTING...." << endl;
                                                             SystemHashTable snapshot = SystemHashTable();
                                                             LinkedList<Post> copy;
                                                             for (int j = 0; j < document.Size(); j++) {
-                                                                std::cout << "Entered the for loop and start retrieving the data" << endl;
                                                                 string username = document[j]["User"]["Username"].GetString();
                                                                 string password = document[j]["User"]["Password"].GetString();
                                                                 copy = LinkedList<Post>();              //Insert a blank linked list into the std::system hash table. Don't add anything
@@ -246,11 +311,27 @@ void main(void)
                                                                         document[j]["User"]["Posts"][k]["Title"].GetString(),
                                                                         document[j]["User"]["Posts"][k]["Contents"].GetString(),
                                                                         document[j]["User"]["Posts"][k]["NumberOfLikes"].GetInt64(),
-                                                                        document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64()
+                                                                        document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64(), 
+                                                                        LinkedList<Comment>()
                                                                     ));
                                                                 }
+                                                                for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
+                                                                    if (document[j]["User"]["Posts"][k]["Comments"].IsArray()) {
+                                                                        for (int l = 0; l < snapshot.get(username).posts.length(); l++) {
+                                                                            //loop through the entire list of comments from the parsed JSON document. 
+                                                                            for (SizeType m = 0; m < document[j]["User"]["Posts"][k]["Comments"].Size(); m++) {
+                                                                                snapshot.get(username).posts.get(l).comment.add(Comment(
+                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["Contents"].GetString(),
+                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["Username"].GetString(),
+                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfLikes"].GetInt64(),
+                                                                                    document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfThumbsUp"].GetInt64()
+                                                                                ));
+                                                                            }
+                                                                        }
+                                                                    } 
+                                                                } 
                                                             }
-                                                            snapshot.get(username).posts.add(Post(postTitle, postContents, 0, 0)); //add the new post accordingly.
+                                                            snapshot.get(username).posts.add(Post(postTitle, postContents)); //add the new post accordingly.
                                                             snapshot.updateFile();
                                                             std::system("cls"); 
                                                             Sleep(500); 
@@ -260,7 +341,7 @@ void main(void)
                                                     }
                                                 }
                                                 else if (decision == "3") {
-                                                    LOAD_SELF_POST:
+                                                LOAD_SELF_POST:
                                                     //Browse posts that the user has made. 
                                                     LinkedList<Post> copy = LinkedList<Post>();
                                                     for (SizeType j = 0; j < document.Size(); j++) {
@@ -273,8 +354,13 @@ void main(void)
                                                                                 document[j]["User"]["Posts"][k]["Title"].GetString(), 
                                                                                 document[j]["User"]["Posts"][k]["Contents"].GetString(), 
                                                                                 document[j]["User"]["Posts"][k]["NumberOfLikes"].GetInt64(),
-                                                                                document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64()
+                                                                                document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64(),
+                                                                                LinkedList<Comment>() 
                                                                             ));
+                                                                        }
+                                                                        //copy the contents of a comment one by one.
+                                                                        if (justAddedLike || justRemovedLike) {
+                                                                            goto JUMP_TO_SKIP; 
                                                                         }
                                                                     }
                                                                     else {
@@ -289,19 +375,18 @@ void main(void)
                                                             }
                                                         }
                                                     }
-                                                    int length = copy.length(); 
                                                     std::system("cls"); 
                                                     Sleep(500); 
                                                     if (copy.isEmpty()) {
                                                         std::cout << endl; 
                                                         std::cout << "There are no posts for display" << endl; 
                                                         std::cout << "______________________________________________________________" << endl; 
-                                                        std::cout << "Number of posts: " << length << endl; 
+                                                        std::cout << "Number of posts: " << copy.length() << endl;
                                                         
                                                     }
                                                     else {
                                                         //Display the list of posts.
-                                                        for (int i = 0; i < length; i++) {
+                                                        for (int i = 0; i < copy.length(); i++) {
                                                             std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl; 
                                                             std::cout << "|Post number: " << std::to_string(i + 1) << "                                           |" << endl;
                                                             std::cout << "|Title: " << copy.get(i).title << ([&copy, i] {
@@ -324,35 +409,248 @@ void main(void)
                                                             })() << endl;
                                                             std::cout << "|Number of likes: " << std::to_string(copy.get(i).noOfLikes) << "                                       |" << endl;
                                                             std::cout << "|Number of thumbs up: " << std::to_string(copy.get(i).noOfThumbsUp) << "                                   |" << endl;
+                                                            std::cout << "|Number of comments: " << std::to_string(copy.get(i).comment.length()) << "                                   |" << endl; 
+
                                                         }
                                                         std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
                                                         std::cout << "______________________________________________________________" << endl;
-                                                        std::cout << "Number of posts: " << length << endl;
+                                                        std::cout << "Number of posts: " << copy.length() << endl;
                                                         //Display a prompt to the user on what he / she would like to do.
                                                         for (; ; ) {
                                                             viewPostMenu();
-                                                            cout << "Your decision: ";
-                                                            string what;
-                                                            getline(cin, what);
-                                                            if (what == "0") {
-                                                                
+                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv) {
+                                                                goto JUMP_TO_SKIP;
                                                             }
-                                                            else if (what == "1") {
+                                                            cout << "Your decision: ";
+                                                        JUMP_TO_SKIP:
+                                                            string what;
+                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike) {
+                                                                what = "2"; 
+                                                                goto RETRIEVE_FULL_DATA_UPDATE_LIKES; 
+                                                            } 
+                                                            what = "";
+                                                            getline(cin, what);
+                                                            if (what == "0") {      //exit to the main menu
+                                                                system("cls"); 
+                                                                Sleep(500); 
                                                                 break; 
                                                             }
-                                                            else if (what == "OPEN") {
-
+                                                            else if (what == "1") {     //exit to the posts list.
+                                                                
                                                             }
-                                                        } 
+                                                            else if (what == "2") {     //open a post 
+                                                                for (; ; ) {
+                                                                    cout << "Please enter post number that you would like to open (Enter 1 to " << copy.length() << ")" << endl;
+                                                                RETRIEVE_FULL_DATA_UPDATE_LIKES: 
+                                                                    string item;
+                                                                    if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike) {
+                                                                        item = std::to_string(likeAppliesToPostNumber);
+                                                                        justAddedLike = false;
+                                                                        justRemovedLike = false; 
+                                                                        goto TRANSFER_CONTROL_TO_TRY_BLOCK; 
+                                                                    }
+                                                                    getline(cin, item);
+                                                                TRANSFER_CONTROL_TO_TRY_BLOCK:
+                                                                    try { 
+                                                                        int postIndex = atoi(item.c_str());
+                                                                        if (postIndex >= 0 && postIndex <= copy.length()) {
+                                                                            string targetPostTitle = "";
+                                                                            string targetPostContent = "";
+                                                                            int numberOfLikes = 0; 
+                                                                            int numberOfThumbsUp = 0; 
+                                                                            LinkedList<Comment> listOfComments; 
+                                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv) {
+                                                                                system("cls");
+                                                                                Sleep(500);
+                                                                                goto BEFORE_READING_DATA;
+                                                                            }
+                                                                            likeAppliesToPostNumber = NULL;
+                                                                            for (; ; ) {
+                                                                                cout << postIndex << endl;
+                                                                                Sleep(2000);
+                                                                                targetPostTitle = copy.get(postIndex - 1).title;
+                                                                                targetPostContent = copy.get(postIndex - 1).contents;
+                                                                                numberOfLikes = copy.get(postIndex - 1).noOfLikes;
+                                                                                numberOfThumbsUp = copy.get(postIndex - 1).noOfThumbsUp;
+                                                                                listOfComments = copy.get(postIndex - 1).comment;
+                                                                                system("cls");
+                                                                                Sleep(500);
+                                                                                cout << "Title: " << targetPostTitle << endl;
+                                                                                cout << endl;
+                                                                                cout << "Contents: " << targetPostContent << endl;
+                                                                                cout << endl;
+                                                                                cout << "Number of likes: " << std::to_string(numberOfLikes) << endl;
+                                                                                cout << endl;
+                                                                                cout << "Number of thumbs up: " << std::to_string(numberOfThumbsUp) << endl;
+                                                                                cout << endl;
+                                                                                cout << "Number of contents (Expandable)" << std::to_string(listOfComments.length()) << endl;
+                                                                                cout << endl;
+                                                                                expandComments();
+                                                                                cout << "Your choice: "; 
+                                                                                BEFORE_READING_DATA: 
+                                                                                string selection = ""; 
+                                                                                if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv) {
+                                                                                    selection = "2"; 
+                                                                                    goto BEFORE_TRY; 
+                                                                                }
+                                                                                getline(cin, selection); 
+                                                                                BEFORE_TRY: 
+                                                                                try {
+                                                                                    int selectionToInteger = atoi(selection.c_str()); 
+                                                                                    if (ifUpdateNumberOfLikes) {
+                                                                                        ifUpdateNumberOfLikes = false; 
+                                                                                        goto BEGIN_ANALYZING; 
+                                                                                    }
+                                                                                    else if (ifUpdateNumberOfLikesInv) {
+                                                                                        ifUpdateNumberOfLikesInv = false; 
+                                                                                        goto BEGIN_ANALYZING_REMOVE_LIKE; 
+                                                                                    }
+                                                                                    if (selectionToInteger == 0) {
+                                                                                        system("cls"); 
+                                                                                        Sleep(500); 
+                                                                                        break; 
+                                                                                    }
+                                                                                    else if (selectionToInteger == 1) {      //like a post 
+                                                                                        //now we will need to get the hash table and then update the number of likes for this post.
+                                                                                        ifUpdateNumberOfLikes = true; 
+                                                                                        likeAppliesToPostNumber = postIndex; 
+                                                                                        goto RETRIEVE_DATA_AGAIN; 
+                                                                                    BEGIN_ANALYZING: 
+                                                                                        //We have already checked if document is an array earlier. 
+                                                                                        SystemHashTable sysHashTable = convertToHashTable(document); 
+                                                                                        int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes; 
+                                                                                        init += 1; 
+                                                                                        sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init; 
+                                                                                        sysHashTable.updateFile(); 
+                                                                                        //need to reload the data again.
+                                                                                        justAddedLike = true; 
+                                                                                        likeAppliesToPostNumber = postIndex; 
+                                                                                        goto RETRIEVE_DATA_AGAIN; 
+                                                                                    }
+                                                                                    else if (selectionToInteger == 2) {         //dislike a post
+                                                                                        if (numberOfLikes > 0) {
+                                                                                            cout << "Came here to remove a like from the post" << endl; 
+                                                                                            ifUpdateNumberOfLikesInv = true; 
+                                                                                            likeAppliesToPostNumber = postIndex; 
+                                                                                            goto RETRIEVE_DATA_AGAIN; 
+                                                                                        BEGIN_ANALYZING_REMOVE_LIKE:
+                                                                                            SystemHashTable sysHashTable = convertToHashTable(document); 
+                                                                                            int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes; 
+                                                                                            init -= 1; 
+                                                                                            sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init; 
+                                                                                            sysHashTable.updateFile(); 
+                                                                                            justRemovedLike = true; 
+                                                                                            likeAppliesToPostNumber = postIndex; 
+                                                                                            goto RETRIEVE_DATA_AGAIN; 
+                                                                                        } 
+                                                                                        //make no changes if the number of likes is 0 at start. 
+                                                                                    }
+                                                                                    else if (selectionToInteger == 3) {
+                                                                                        //add a thumbs up to the post
+
+                                                                                    }
+                                                                                    else if (selectionToInteger == 4) {
+                                                                                        //remove a thumbs up from a post
+                                                                                        
+                                                                                    }
+                                                                                    else if (selectionToInteger == 5) {
+                                                                                        cout << "==========================COMMENTS============================" << endl;
+                                                                                        if (listOfComments.isEmpty()) {
+                                                                                            cout << "Whooooosh..... No comments to be displayed for now." << endl;
+                                                                                            cout << endl;
+                                                                                            cout << "Number of comments: " << std::to_string(listOfComments.length()) << endl;
+                                                                                        }
+                                                                                        else {
+                                                                                            for (int i = 0; i < listOfComments.length(); i++) {
+                                                                                                cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                                                                cout << "Comment number: " << std::to_string(i + 1) << endl;
+                                                                                                cout << "User: " << listOfComments.get(i).users << endl;
+                                                                                                cout << "Comment: " << listOfComments.get(i).contents << endl;
+                                                                                                cout << "Number of likes: " << std::to_string(listOfComments.get(i).noOfLikes) << endl;
+                                                                                                cout << "Number of thumbs up: " << std::to_string(listOfComments.get(i).noOfThumbsUp) << endl;
+                                                                                            }
+                                                                                            cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                                                        }
+                                                                                    }
+                                                                                    else {
+                                                                                        cout << "Invalid option. Please try again!" << endl;
+                                                                                        Sleep(2000);
+                                                                                        system("cls");
+                                                                                    }
+                                                                                } 
+                                                                                catch (exception ignored) {
+                                                                                    cout << "Invalid option. Please try again!" << endl;
+                                                                                    Sleep(2000);
+                                                                                    system("cls");
+                                                                                }
+                                                                            } 
+                                                                            //extract the data again!
+                                                                            quitToListOfPostsCreatedBySelf = true; 
+                                                                            goto RETRIEVE_DATA_AGAIN; 
+                                                                        }
+                                                                        else {
+                                                                            cout << "Please enter a post number between 1 and " << copy.length() << " not " << postIndex << endl; 
+                                                                            Sleep(2000); 
+                                                                            system("cls"); 
+                                                                        }
+                                                                    }
+                                                                    catch (exception ignored) {
+                                   
+                                                                    }
+                                                                } 
+                                                            }
+                                                        }
                                                     }
                                                 }
                                                 else if (decision == "4") {
                                                     //to implement
-                                                    //only load the posts from toher users....
-                                                    LinkedList<Post> copyPosts = LinkedList<Post>(); 
-                                                    for (SizeType j = 0; j < document.Size(); j++) {
+                                                    //load posts from others plus yourself.
+                                                    //all data copied into sysHashTable.
+                                                    LinkedList<string> usernames = extractUsername(document); 
+                                                    SystemHashTable  sysHashTable = convertToHashTable(document);
+                                                    LinkedList<Post> copy = LinkedList<Post>(); 
+                                                    for (int i = 0; i < usernames.length(); i++) {
+                                                        if (usernames.get(i) != user) {
+                                                            LinkedList<Post> pL = sysHashTable.get(usernames.get(i)).posts; 
+                                                            for (int j = 0; j < pL.length(); j++) {
+                                                                copy.add(
+                                                                    Post(pL.get(j).title, pL.get(j).contents, pL.get(j).noOfLikes, pL.get(j).noOfThumbsUp, LinkedList<Comment>())
+                                                                ); 
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    //Display the list of posts.
+                                                    for (int i = 0; i < copy.length(); i++) {
+                                                        std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                        std::cout << "|Username: " << usernames.get(i) << "|" << endl;
+                                                        std::cout << "|Post number: " << std::to_string(i + 1) << "                                           |" << endl;
+                                                        std::cout << "|Title: " << copy.get(i).title << ([&copy, i] {
+                                                            int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).title.c_str()) + (std::strlen("Post number:") - std::strlen("Title:"));
+                                                            string out = "";
+                                                            for (int internal = 0; internal <= lenWs; internal++) {
+                                                                out += " ";
+                                                            }
+                                                            out += "|";
+                                                            return out;
+                                                            })() << endl;
+                                                            std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
+                                                                int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
+                                                                string out = "";
+                                                                for (int internal = 0; internal <= lenWs; internal++) {
+                                                                    out += " ";
+                                                                }
+                                                                out += "|";
+                                                                return out;
+                                                                })() << endl;
+                                                                std::cout << "|Number of likes: " << std::to_string(copy.get(i).noOfLikes) << "                                       |" << endl;
+                                                                std::cout << "|Number of thumbs up: " << std::to_string(copy.get(i).noOfThumbsUp) << "                                   |" << endl;
+                                                                std::cout << "|Number of comments: " << std::to_string(copy.get(i).comment.length()) << "                                   |" << endl;
 
                                                     }
+                                                    std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                    std::cout << "______________________________________________________________" << endl;
+                                                    std::cout << "Number of posts: " << copy.length() << endl;
                                                 } 
                                             }
                                         }
@@ -432,14 +730,32 @@ void main(void)
                                 if (document[j]["User"]["Posts"].IsArray()) {
                                     for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
                                         copy.add(Post(
-                                            document[j]["User"]["Posts"]["Title"].GetString(),
-                                            document[j]["User"]["Posts"]["Contents"].GetString(),
-                                            document[j]["User"]["Posts"]["NumberOfLikes"].GetInt64(),
-                                            document[j]["User"]["Posts"]["NumberOfThumbsUp"].GetInt64()
+                                            document[j]["User"]["Posts"][k]["Title"].GetString(),
+                                            document[j]["User"]["Posts"][k]["Contents"].GetString(),
+                                            document[j]["User"]["Posts"][k]["NumberOfLikes"].GetInt64(),
+                                            document[j]["User"]["Posts"][k]["NumberOfThumbsUp"].GetInt64(), 
+                                            LinkedList<Comment>()
                                         ));
+                                    }
+                                    for (SizeType k = 0; k < document[j]["User"]["Posts"].Size(); k++) {
+                                        if (document[j]["User"]["Posts"][k]["Comments"].IsArray()) {
+                                            for (int l = 0; l < copy.length(); l++) {
+                                                //loop through the entire list of comments from the parsed JSON document. 
+                                                for (SizeType m = 0; m < document[j]["User"]["Posts"][k]["Comments"].Size(); m++) {
+                                                    copy.get(l).comment.add(Comment(
+                                                        document[j]["User"]["Posts"][k]["Comments"][m]["Contents"].GetString(),
+                                                        document[j]["User"]["Posts"][k]["Comments"][m]["Username"].GetString(),
+                                                        document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfLikes"].GetInt64(),
+                                                        document[j]["User"]["Posts"][k]["Comments"][m]["NumberOfThumbsUp"].GetInt64()
+                                                    ));
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 snapshot.add(username, password, copy);
+                                cout << "DF" << endl;
+                                Sleep(2000);
                                 snapshot.updateFile();
                             }
                         }

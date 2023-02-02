@@ -15,22 +15,24 @@ public:
 		this->contents = std::move(otherPost.contents);
 		this->noOfLikes = std::move(otherPost.noOfLikes);
 		this->noOfThumbsUp = std::move(otherPost.noOfThumbsUp); 
-		
+		this->comment = std::move(otherPost.comment); 
 	}
 	Post(void) {
 		 
 	}
-	Post(string title, string contents, int noOfLikes, int noOfThumbsUp) {
+	Post(string title, string contents, int noOfLikes, int noOfThumbsUp, LinkedList<Comment> comments) {
 		this->title = title; 
 		this->contents = contents; 
 		this->noOfLikes = noOfLikes; 
 		this->noOfThumbsUp = noOfThumbsUp; 
+		this->comment = comments; 
 	}
-	Post(string title, string contents) {
+	Post(string title, string contents) {			//new Post
 		this->title = title; 
 		this->contents = contents; 
 		this->noOfLikes = 0; 
 		this->noOfThumbsUp = 0; 
+		this->comment = LinkedList<Comment>(); 
 	}
 	~Post(void) {
 

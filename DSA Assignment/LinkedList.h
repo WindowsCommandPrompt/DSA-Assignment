@@ -52,7 +52,7 @@ public:
 		} while (this->size > 0);
 	}
 
-	T get(int index) {
+	T& get(int index) {
 		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
 			if (index == 0) {
 				return firstNode->item;
