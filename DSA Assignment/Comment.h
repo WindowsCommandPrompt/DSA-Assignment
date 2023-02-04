@@ -6,6 +6,14 @@ using namespace std;
 class Comment
 {
 public: 
+	Comment(const Comment&) = default;
+	Comment& operator=(const Comment&) = default;
+	Comment(Comment&& otherComment) {
+		
+		this->contents = std::move(otherComment.contents);
+		this->noOfLikes = std::move(otherComment.noOfLikes);
+
+	}
     Comment(void) {
 
    }

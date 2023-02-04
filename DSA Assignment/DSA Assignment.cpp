@@ -108,12 +108,13 @@ SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
                     ); 
                     if (rawData[i]["User"]["Posts"][j]["Comments"].IsArray()) {
                         for (SizeType k = 0; k < rawData[i]["User"]["Posts"][j]["Comments"].Size(); k++) {; 
-                            out.get(rawData[i]["Username"].GetString()).posts.get(j).comment.add(
-                                Comment(
-                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["Content"].GetString(),
-                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["Username"].GetString(),
-                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfLikes"].GetInt64(),
-                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfThumbsUp"].GetInt64()
+                        out.get(rawData[i]["Username"].GetString()).posts.get(j).comment.add(
+                            Comment(
+                                rawData[i]["User"]["Posts"][j]["Comments"][k]["Content"].GetString(),
+                                rawData[i]["User"]["Posts"][j]["Comments"][k]["Username"].GetString(),
+                                rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfLikes"].GetInt64(),
+                                rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfThumbsUp"].GetInt64()
+                                
                                 )
                             ); 
                         }
@@ -549,7 +550,8 @@ void main(void)
                                                                                         }
                                                                                     }
                                                                                     else if (selectionToInteger == 6) {
-                                                                                        cout << "==========================REPLY TO A COMMENT: ============================" << endl;
+                                                                                        cout << "==========================REPLY TO A POST: ============================" << endl;
+                                                                                        
                                                                                         string commentsContents;
                                                                                         cout << "Please enter your comments" << endl;
                                                                                         getline(cin, commentsContents);
@@ -559,20 +561,29 @@ void main(void)
                                                                                         std::cout << "Contents: " << commentsContents << endl;
                                                                                         std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
                                                                                         std::cout << "[0] Exit to the main menu (Your changes will be lost)" << endl;
-                                                                                        
-                                                                                        std::cout << "[1] Edit contents" << endl;
-                                                                                        std::cout << "[2] Post" << endl;
+                                                                                        std::cout << "[1] Post" << endl;
                                                                                         std::cout << "=====================================================" << endl;
                                                                                         std::cout << "Your choice?: ";
                                                                                         string choice = "";
                                                                                         getline(cin, choice);
-                                                                                        if (choice == "2") {
+                                                                                        if (choice == "0") {      //exit to the main menu
+                                                                                            system("cls");
+                                                                                            Sleep(500);
+                                                                                            break;
+                                                                                        }
+                                                                                        else if (choice == "1") {
                                                                                             // update the user
                                                                                             std::system("cls");
                                                                                             Sleep(500);
                                                                                             std::cout << "POSTING YOUR COMMENT.." << endl;
                                                                                             SystemHashTable snapshot = convertToHashTable(document);
-                                                                                            
+                                                                                            snapshot.get(username).posts.get(1).comment.add(Comment
+                                                                                             (commentsContents,username));
+                                                                                            snapshot.updateFile();
+                                                                                            std::system("cls");
+                                                                                            Sleep(500);
+                                                                                            ifAfterAdd = true;
+
                                                                                         }
                                                                                     }
                                                                                     else {

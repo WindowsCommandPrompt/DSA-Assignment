@@ -34,6 +34,7 @@ public:
 		this->noOfThumbsUp = 0; 
 		this->comment = LinkedList<Comment>(); 
 	}
+
 	~Post(void) {
 
 	}
