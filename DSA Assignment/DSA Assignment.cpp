@@ -497,7 +497,7 @@ void main(void)
                                                                                         SystemHashTable sysHashTable = convertToHashTable(document);
                                                                                         int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes;
                                                                                         init += 1;
-                                                                                        sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init;
+                                                                                        /*sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init;*/
                                                                                         sysHashTable.updateFile();
                                                                                         //need to reload the data again.
                                                                                         justAddedLike = true;
@@ -514,7 +514,7 @@ void main(void)
                                                                                             SystemHashTable sysHashTable = convertToHashTable(document);
                                                                                             int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes;
                                                                                             init -= 1;
-                                                                                            sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init;
+                                                                                            /*sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init;*/
                                                                                             sysHashTable.updateFile();
                                                                                             justRemovedLike = true;
                                                                                             likeAppliesToPostNumber = postIndex;
@@ -577,7 +577,7 @@ void main(void)
                                                                                             Sleep(500);
                                                                                             std::cout << "POSTING YOUR COMMENT.." << endl;
                                                                                             SystemHashTable snapshot = convertToHashTable(document);
-                                                                                            snapshot.get(username).posts.get(1).comment.add(Comment
+                                                                                            snapshot.get(username).posts.get(0).comment.add(Comment
                                                                                              (commentsContents,username));
                                                                                             snapshot.updateFile();
                                                                                             std::system("cls");

@@ -22,6 +22,7 @@ public:
 	   this->users = user; 
 	   this->noOfLikes = 0; 
 	   this->noOfThumbsUp = 0; 
+	   
    }
    Comment(string contents, string user, int noOfLikes, int noOfThumbsUp) {
 	   this->contents = contents; 
