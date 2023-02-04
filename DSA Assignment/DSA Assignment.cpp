@@ -10,6 +10,8 @@
 #include <format>
 #include "Topic.h"
 #include "Comment.h"
+#include "User.h"
+#include "Post.h"
 #include "LinkedList.h" 
 #include "SystemHashTable.h"
 #include "rapidjson/document.h"
@@ -119,12 +121,31 @@ SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
                             ); 
                         }
                     }
+
+                    if(rawData[i]["User"]["Posts"][j]["Topic"].IsArray()) {
+                        for (SizeType c = 0; j < rawData[i]["User"]["Posts"].Size(); c++) {
+                            out.get(rawData[i]["Username"].GetString()).topics.add(
+                                Topic(
+                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["Content"].GetString(),
+                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["Username"].GetString(),
+                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["NumberOfLikes"].GetInt64(),
+                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["NumberOfThumbsUp"].GetInt64()
+                                )
+                            );
+
+
+                        }
+                    
+                    
+                    
+                    }
                 }
             }
         }
     }
     return out; 
 }
+
 
 void main(void)
 {
@@ -583,7 +604,7 @@ void main(void)
                                                                                             std::system("cls");
                                                                                             Sleep(500);
                                                                                             ifAfterAdd = true;
-
+                                                                                            
                                                                                         }
                                                                                     }
                                                                                     else {

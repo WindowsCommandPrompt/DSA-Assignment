@@ -25,9 +25,15 @@ public:
 		this->username = username; 
 		this->password = password; 
 	}
+	SystemUser(string username, string password, LinkedList<Topic> topic) {
+		this->topics = topic;
+		this->username = username;
+		this->password = password;
+	}
 	SystemUser(SystemUser&& user)
 	{
 		this->posts = std::move(user.posts);
+		this->topics = std::move(user.topics);
 		this->username = std::move(user.username);
 		this->password = std::move(user.password);
 	}
