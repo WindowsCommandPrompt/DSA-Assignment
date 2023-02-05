@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="DSA Assignment.cpp" />
     <ClCompile Include="SystemHashTable.cpp" />
+    <ClCompile Include="TopicHashTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Comment.h" />
@@ -137,6 +138,7 @@
     <ClInclude Include="SystemHashTable.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="topic.h" />
+    <ClInclude Include="TopicHashTable.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
