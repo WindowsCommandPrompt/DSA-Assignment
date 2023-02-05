@@ -614,6 +614,72 @@ void main(void)
                                                                                             
                                                                                         }
                                                                                     }
+                                                                                    else if (selectionToInteger == 7) {
+                                                                                        cout << "===================Edit Post=================" << endl;
+                                                                                        string newPostContents;
+                                                                                        cout << "Please enter new post contents" << endl;
+                                                                                        getline(cin, newPostContents);
+                                                                                        std::cout << "YOUR NEW POST: " << endl;
+                                                                                        std::cout << "====================================" << endl;
+                                                                                        std::cout << "+++++++++++++++++++++++++++++++++++" << endl;
+                                                                                        std::cout << "[0] Exit to the main menu (Your changes will be lost)" << endl;
+                                                                                        std::cout << "[1] Post" << endl;
+                                                                                        std::cout << "====================================" << endl;
+                                                                                        std::cout << "Your choice?: ";
+                                                                                        string choice = "";
+                                                                                        getline(cin, choice);
+                                                                                        if (choice == "0") {
+                                                                                            system("cls");
+                                                                                            Sleep(500);
+                                                                                            break;
+                                                                                        }
+                                                                                        else if (choice == "1") {
+                                                                                            // update the user
+                                                                                            std::system("cls");
+                                                                                            Sleep(500);
+                                                                                            std::cout << "UPDATING YOUR POST.." << endl;
+                                                                                            SystemHashTable snapshot = convertToHashTable(document);
+                                                                                            //snapshot.get(username).posts.(Post(postTitle, postContents)); //add the new post accordingly.
+                                                                                            snapshot.updateFile();
+                                                                                            std::system("cls");
+                                                                                            Sleep(500);
+                                                                                            ifAfterAdd = true;
+                                                                                        }
+                                                                                    }
+                                                                                    else if (selectionToInteger == 8) {
+                                                                                        cout << "===================Delete Post=================" << endl;
+                                                                                        
+                                                                                        string postindex;
+                                                                                        cout << "Post to be deleted" << endl;
+                                                                                        getline(cin, postindex);
+                                                                                        std::cout << "POST TO BE DELETED: " << endl;
+                                                                                        std::cout << "====================================" << endl;
+                                                                                        std::cout << "+++++++++++++++++++++++++++++++++++" << endl;
+                                                                                        std::cout << "[0] Exit to the main menu (Your changes will be lost)" << endl;
+                                                                                        std::cout << "[1] DELETE" << endl;
+                                                                                        std::cout << "====================================" << endl;
+                                                                                        std::cout << "Your choice?: ";
+                                                                                        string choice = "";
+                                                                                        getline(cin, choice);
+                                                                                        if (choice == "0") {
+                                                                                            system("cls");
+                                                                                            Sleep(500);
+                                                                                            break;
+                                                                                        }
+                                                                                        else if (choice == "1") {
+                                                                                            // update the user
+                                                                                            std::system("cls");
+                                                                                            Sleep(500);
+                                                                                            std::cout << "DELETING YOUR POST.." << endl;
+                                                                                            SystemHashTable snapshot = convertToHashTable(document);
+
+                                                                                            snapshot.get(username).posts.remove(1); //add the new post accordingly.
+                                                                                            snapshot.updateFile();
+                                                                                            std::system("cls");
+                                                                                            Sleep(500);
+                                                                                            ifAfterAdd = true;
+                                                                                        }
+                                                                                    }
                                                                                     else {
                                                                                         cout << "Invalid option. Please try again!" << endl;
                                                                                         Sleep(2000);

@@ -51,7 +51,6 @@ public:
 			}
 		} while (this->size > 0);
 	}
-	// error: if both get method is in use, will result in read access violation -- 
 	T& get1(int index) {
 		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
 			if (index == 0) {
@@ -69,7 +68,7 @@ public:
 		}
 	}
 
-	T&&& get2(int index) {			//For LinkedList<Reply>
+	T&& get2(int index) {			//For LinkedList<Reply>
 		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
 			if (index == 0) {
 				return firstNode->item;
