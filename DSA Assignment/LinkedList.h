@@ -52,22 +52,39 @@ public:
 		} while (this->size > 0);
 	}
 	// error: if both get method is in use, will result in read access violation -- 
-	//T& get(int index) {
-	//	if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
-	//		if (index == 0) {
-	//			return firstNode->item;
-	//		}
-	//		else {
-	//			Node* current = firstNode; //start at the first node
-	//			int p = 0;
-	//			while (p < index) {
-	//				current = current->next;
-	//				++p;
-	//			}
-	//			return current->item;
-	//		}
-	//	}
-	//}
+	T& get1(int index) {
+		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
+			if (index == 0) {
+				return firstNode->item;
+			}
+			else {
+				Node* current = firstNode; //start at the first node
+				int p = 0;
+				while (p < index) {
+					current = current->next;
+					++p;
+				}
+				return current->item;
+			}
+		}
+	}
+
+	T&&& get2(int index) {			//For LinkedList<Reply>
+		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
+			if (index == 0) {
+				return firstNode->item;
+			}
+			else {
+				Node* current = firstNode; //start at the first node
+				int p = 0;
+				while (p < index) {
+					current = current->next;
+					++p;
+				}
+				return current->item;
+			}
+		}
+	}
 
 	T&& get(int index) {
 		if (index >= 0) { 
