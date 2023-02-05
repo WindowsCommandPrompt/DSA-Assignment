@@ -497,7 +497,7 @@ void main(void)
                                                                                         SystemHashTable sysHashTable = convertToHashTable(document);
                                                                                         int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes;
                                                                                         init += 1;
-                                                                                        /*sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init;*/
+                                                                                        sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfLikes = init;     //need to uncomment 
                                                                                         sysHashTable.updateFile();
                                                                                         //need to reload the data again.
                                                                                         justAddedLike = true;
@@ -514,7 +514,7 @@ void main(void)
                                                                                             SystemHashTable sysHashTable = convertToHashTable(document);
                                                                                             int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes;
                                                                                             init -= 1;
-                                                                                            /*sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes = init;*/
+                                                                                            sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfLikes = init;
                                                                                             sysHashTable.updateFile();
                                                                                             justRemovedLike = true;
                                                                                             likeAppliesToPostNumber = postIndex;
@@ -773,7 +773,7 @@ void main(void)
                 //Privacy policy
                 cout << "==================PRIVACY POLICY===================" << endl;
                 cout << "1) No part of this software shall be distributed without prior permission from the developers." << endl;
-
+                
             }
         }
         catch (exception e) {
