@@ -55,6 +55,7 @@ void mainMenu(void) {
     std::cout << "# [2] Create a new post                                   #" << endl;
     std::cout << "# [3] Browse my posts                                     #" << endl; 
     std::cout << "# [4] Explore other people's posts                        #" << endl; 
+    std::cout << "# [5] Explore all topics                                  #" << endl;
     std::cout << "===========================================================" << endl; 
 }
 
@@ -75,6 +76,8 @@ void expandComments(void) {
     std::cout << "# [4] Remove a thumbs up                                  #" << endl; 
     std::cout << "# [5] Expand comments                                     #" << endl;
     std::cout << "# [6] Reply to post                                       #" << endl;
+    std::cout << "# [7] Edit Post                                           #" << endl;
+    std::cout << "# [8] Delete Post                                         #" << endl;
     std::cout << "===========================================================" << endl; 
 }
 
@@ -122,23 +125,25 @@ SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
                         }
                     }
 
-                    if(rawData[i]["User"]["Posts"][j]["Topic"].IsArray()) {
-                        for (SizeType c = 0; j < rawData[i]["User"]["Posts"].Size(); c++) {
-                            out.get(rawData[i]["Username"].GetString()).topics.add(
-                                Topic(
-                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["Content"].GetString(),
-                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["Username"].GetString(),
-                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["NumberOfLikes"].GetInt64(),
-                                    rawData[i]["User"]["Posts"][j]["Topic"][c]["NumberOfThumbsUp"].GetInt64()
-                                )
-                            );
+                    //if(rawData[i]["User"]["Posts"][j]["Topic"].IsArray()) {
+                    //    for (SizeType c = 0; j < rawData[i]["User"]["Topic"].Size(); c++) {
+                    //        out.get(rawData[i]["Username"].GetString()).topics.add(
+                    //            Topic(
+                    //                rawData[i]["User"]["Posts"][j]["Topic"][c]["Title"].GetString(),
+                    //                rawData[i]["User"]["Posts"][j]["Topic"][c]["Content"].GetString(),
+                    //                rawData[i]["User"]["Posts"][j]["Topic"][c]["Username"].GetString(),
+                    //                rawData[i]["User"]["Posts"][j]["Topic"][c]["NumberOfLikes"].GetInt64(),
+                    //                rawData[i]["User"]["Posts"][j]["Topic"][c]["NumberOfThumbsUp"].GetInt64(),
+                    //                LinkedList<Post>()
+                    //                
+                    //               
+                    //            )
+                    //        
+                    //        );
 
 
-                        }
-                    
-                    
-                    
-                    }
+                    //    }                
+                    //}
                 }
             }
         }
@@ -279,7 +284,9 @@ void main(void)
                                                             Sleep(500);
                                                             cout << "POSTING YOUR TOPIC.." << endl;
                                                             SystemHashTable snapshot = convertToHashTable(document);
-                                                            snapshot.get(username).topics.add(Topic(topicTitle, topicContents)); //add the new topic accordingly.
+                                                            snapshot.get(username).topics.add(Topic
+                                                            (topicTitle, topicContents));
+                                                            //snapshot.get(username).posts.add(Post(topicTitle, topicContents)); //add the new topic accordingly.
                                                             snapshot.updateFile();
                                                             std::system("cls");
                                                             Sleep(500);
@@ -686,6 +693,83 @@ void main(void)
                                                     std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
                                                     std::cout << "______________________________________________________________" << endl;
                                                     std::cout << "Number of posts: " << copy.length() << endl;
+                                                }
+                                                else if (decision == "5") {
+                                                LOAD_TOPIC:
+                                                    // Browse Topics that user have made
+                                                    LinkedList<Post> copy = LinkedList<Post>();
+                                                    // assertion error ** 
+                                                    //for (SizeType j = 0; j < document.Size(); j++) {
+                                                    //    if (document[j].IsObject()) { // Check whether it is a JSON object.
+                                                    //        if (document[j]["Username"].GetString() == user) {
+                                                    //            if (document[j]["User"].IsObject()) {
+                                                    //                if (document[j]["User"]["Topics"].IsArray()) {
+                                                    //                    for (int k = 0; k < document[j]["User"]["Topics"].Size(); k++) {
+                                                    //                        copy.add(Post(
+                                                    //                            document[j]["User"]["Topic"][k]["title"].GetString(),
+                                                    //                            document[j]["User"]["Topic"][k]["contents"].GetString(),
+                                                    //                            
+                                                    //                            document[j]["User"]["Topic"][k]["NumberOfLikes"].GetInt64(),
+                                                    //                            document[j]["User"]["Topic"][k]["NumberOfThumbsUp"].GetInt64(),
+                                                    //                            LinkedList<Post>()
+                                                    //                        ));
+                                                    //                    }
+                                                    //                    // copy the contents of a topic one by one.
+                                                    //                    if (justAddedLike || justRemovedLike) {
+                                                    //                        //goto JUMP_TO_SKIP;
+                                                    //                    }
+                                                    //                }
+                                                    //            }
+                                                    //            else {
+                                                    //                std::cout << "File is modified! Please reinstall application!";
+                                                    //                goto LOGOUT;
+                                                    //            }
+                                                    //      
+                                                    //        }
+                                                    //   
+                                                    //    }
+                                                    //}
+                                                    std::system("cls");
+                                                    Sleep(500);
+                                                    if (copy.isEmpty()) {
+                                                        std::cout << endl;
+                                                        std::cout << "There are no topics for display" << endl;
+                                                        std::cout << "______________________________________________________________" << endl;
+                                                        std::cout << "Number of topics: " << copy.length() << endl;
+
+                                                    }
+                                                    else {
+                                                        //Display the list of topic.
+                                                        for (int i = 0; i < copy.length(); i++) {
+                                                            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                            std::cout << "|Topic number: " << std::to_string(i + 1) << "                                           |" << endl;
+                                                            std::cout << "|Title: " << copy.get(i).title << ([&copy, i] {
+                                                                int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).title.c_str()) + (std::strlen("Post number:") - std::strlen("Title:"));
+                                                            string out = "";
+                                                            for (int internal = 0; internal <= lenWs; internal++) {
+                                                                out += " ";
+                                                            }
+                                                            out += "|";
+                                                            return out;
+                                                                })() << endl;
+                                                                std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
+                                                                    int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
+                                                                string out = "";
+                                                                for (int internal = 0; internal <= lenWs; internal++) {
+                                                                    out += " ";
+                                                                }
+                                                                out += "|";
+                                                                return out;
+                                                                    })() << endl;
+                                                                    std::cout << "|Number of likes: " << std::to_string(copy.get(i).noOfLikes) << "                                       |" << endl;
+                                                                    std::cout << "|Number of thumbs up: " << std::to_string(copy.get(i).noOfThumbsUp) << "                                   |" << endl;
+                                                                    std::cout << "|Number of comments: " << std::to_string(copy.get(i).comment.length()) << "                                   |" << endl;
+
+                                                        }
+                                                    }
+                                                        std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                        std::cout << "______________________________________________________________" << endl;
+                                                        std::cout << "Number of Topics: " << copy.length() << endl;
                                                 }
                                             }
                                         }

@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "Post.h"
 using namespace std; 
 
 // This file will be responsible for the tracking of the topics
@@ -16,12 +16,20 @@ public:
     Topic(void) {
 
     }
-    Topic(string TopicTitle, string contents)
+    Topic(string TopicTitle, string contents) // new Topic
     {
         this->TopicTitle = TopicTitle;
         this->contents = contents;
         this->noOfPosts = 0;
         this->noOfLikes = 0;
+    }
+    Topic (string TopicTitle,string contents, string user, int noOfLikes, int noOfThumbsUp, LinkedList<Post> post) {  // new Topic
+        this->TopicTitle = TopicTitle;
+        this->contents = contents;
+        this->users = user;
+        this->noOfLikes = 0;
+        this->noOfThumbsUp = 0;
+        this->post = post;
     }
     ~Topic(void) {
 
@@ -30,5 +38,7 @@ public:
     int noOfLikes; 
     string TopicTitle;
     string contents;
-
+    string users;
+    int noOfThumbsUp;
+    LinkedList<Post> post;
 };

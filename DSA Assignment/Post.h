@@ -29,6 +29,13 @@ public:
 		this->noOfThumbsUp = noOfThumbsUp;
 		this->comment = comments;
 	}
+	Post(string title, string contents, int noOfLikes, int noOfThumbsUp, LinkedList<Post> post) {
+		this->title = title;
+		this->contents = contents;
+		this->noOfLikes = noOfLikes;
+		this->noOfThumbsUp = noOfThumbsUp;
+		this->post = post;
+	}
 	Post(string title, string contents) {			//new Post
 		this->title = title;
 		this->contents = contents;
@@ -38,13 +45,11 @@ public:
 	}
 
 	Post(string topic, LinkedList<Post> post) {			// new Topic
-		this->post = LinkedList<Post>();
+		this->post = post;
 		this->topic = topic;
 		this->contents = contents;
 		this->noOfLikes = 0;
 		this->noOfThumbsUp = 0;
-
-
 	}
 
 
