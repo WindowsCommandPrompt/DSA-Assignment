@@ -84,16 +84,6 @@ void expandComments(void) {
     std::cout << "===========================================================" << endl; 
 }
 
-LinkedList<string> extractUsername(rapidjson::Document& rawData) {
-    LinkedList<string> usersOfThePlatform = LinkedList<string>(); 
-    if (rawData.IsArray()) {
-        for (SizeType i = 0; i < rawData.Size(); i++) {
-            usersOfThePlatform.add(rawData[i]["Username"].GetString()); 
-        }
-    }
-    return usersOfThePlatform; 
-}
-
 SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
     SystemHashTable out = SystemHashTable(); 
     if (rawData.IsArray()) {
@@ -726,10 +716,75 @@ void main(void)
                                                     //to implement
                                                     //load posts from others plus yourself.
                                                     //all data copied into sysHashTable.
+                                                    std::system("cls"); 
+                                                    Sleep(500); 
                                                     SystemHashTable sysHashTable = convertToHashTable(document); 
+                                                    LinkedList<string> usernames = LinkedList<string>(); 
+                                                    LinkedList<string> usernames1 = LinkedList<string>(); 
+                                                    if (document.IsArray()) {
+                                                        for (SizeType t = 0; t < document.Size(); t++) {
+                                                            string username = document[t]["Username"].GetString(); 
+                                                            usernames1.add(username); 
+                                                            usernames.add(username);
+                                                        }
+                                                    }
+                                                    LinkedList<int> indices = LinkedList<int>(); 
+                                                    for (int i = 0; i < usernames.length(); i++) {
+                                                        LinkedList<Post> post = sysHashTable.get(usernames.get(i)).posts; 
+                                                        if (i != 0) indices.add(post.length()); 
+                                                        for (int j = 0; j < post.length(); j++) {
+                                                            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl; 
+                                                            std::cout << "|Post number: " << (i == 0 ? j + 1 : ([&indices, &i] {
+                                                                int numOfElements = indices.length(), sum = 0; 
+                                                                for (int counter = 1; counter < numOfElements - 1; counter++) {
+                                                                    sum += indices.get(i - counter); 
+                                                                }
+                                                                std::cout << sum << std::endl; 
+                                                                return sum; 
+                                                            })() + j) << std::endl;
+                                                            std::cout << "|User: " << usernames1.get(i) << std::endl;
+                                                            std::cout << "|Title: " << post.get(j).title << std::endl; 
+                                                            std::cout << "|Contents: " << post.get(j).contents << std::endl;
+                                                            std::cout << "|Number of Likes: " << post.get(j).noOfLikes << std::endl; 
+                                                            std::cout << "|Number of Thumbs up: " << post.get(j).noOfThumbsUp << std::endl;
+                                                            std::cout << "|Number of comments: " << post.get(j).comment.length() << std::endl; 
+                                                        }
+                                                    }
+                                                    std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+                                                    std::cout << std::endl; 
+                                                    for (; ; ) {
+                                                        viewPostMenu(); 
+                                                        std::cout << "Your choice? "; 
+                                                        string what; 
+                                                        getline(cin, what); 
+                                                        try {
+                                                            int c = atoi(what.c_str()); 
+                                                            if (c == 0) {   //quit to the main menu
+                                                                std::system("cls"); 
+                                                                Sleep(500); 
+                                                                break; 
+                                                            }
+                                                            else if (c == 1) {
 
+                                                            }
+                                                            else if (c == 2) {      //Prompt the user for the post index
+                                                                std::cout << "Please enter post number that you would like to open (Enter 1 to " << ([&indices] {
+                                                                    int largest = 0; 
+                                                                    for (int i = 0; i < indices.length(); i++) {
+                                                                        largest = indices.get(i) > largest ? indices.get(i) : indices.get(i) == largest ? largest : largest; 
+                                                                    }
+                                                                    return largest;
+                                                                })() << ")" << endl;
 
-                                                    
+                                                            }
+                                                            else {
+                                                                std::cout << "Invalid option please try again!" << std::endl; 
+                                                            }
+                                                        }
+                                                        catch (exception e) {
+                                                            std::cout << "Invalid option please try again!" << std::endl; 
+                                                        }
+                                                    }
                                                 }
                                                 else if (decision == "5") {
                                                 LOAD_TOPIC:
