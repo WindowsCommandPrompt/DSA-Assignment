@@ -30,6 +30,9 @@ static bool quitToListOfPostsCreatedBySelf = false;
 static bool justAddedLike = false; 
 static bool justRemovedLike = false; 
 static bool justAddedThumbsUp = false; 
+static bool justRemovedThumbsUp = false;
+static bool ifUpdateNumberOfThumbsUp = false; 
+static bool ifUpdateNumberOfThumbsUpInv = false; 
 static int likeAppliesToPostNumber = 0; 
 
 void login(void) {
@@ -154,36 +157,6 @@ SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
 
 void main(void)
 {
-    //// create a JSON object
-    //Document jsonDoc;
-    //jsonDoc.SetObject();
-    //Value user;
-    //user.SetString("Peter Dan");
-    //jsonDoc.AddMember("User", user, jsonDoc.GetAllocator());
-    //Value PostThumbsUp;
-    //PostThumbsUp.SetInt(12);
-    //jsonDoc.AddMember("Post Thumbs Up", PostThumbsUp, jsonDoc.GetAllocator());
-    //Value PostLikes;
-    //PostLikes.SetInt(12);
-    //jsonDoc.AddMember("Post Likes", PostLikes, jsonDoc.GetAllocator());
-    //Value title;
-    //title.SetString("Implementing Hash Table");
-    //jsonDoc.AddMember("Title", title, jsonDoc.GetAllocator());
-    //Value content;
-    //content.SetString("Hash table is a type of data structures...");
-    //jsonDoc.AddMember("Content", content, jsonDoc.GetAllocator());
-    //Value topic;
-    //topic.SetString("C++");
-    //jsonDoc.AddMember("Topic", topic, jsonDoc.GetAllocator());
-    //StringBuffer buffer;
-    //Writer<StringBuffer> writer(buffer);
-    //jsonDoc.Accept(writer);
-    //string jsonString = buffer.GetString();
-    //ofstream datFile;
-    //datFile.open("post.dat");
-    //datFile << jsonString;
-    //datFile.close();
-
     for (; ; ) {                    //Initiate an infinite loop. 
         login();                    //Display the main menu to the user. 
         std::cout << "Your choice: ";    //Prompting the user for his / her choice
@@ -227,19 +200,19 @@ void main(void)
                                             std::system("cls");
                                             Sleep(1000);
                                             for (; ; ) {
-                                                if (ifAfterAdd || ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike || quitToListOfPostsCreatedBySelf) {
+                                                if (ifAfterAdd || ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike || quitToListOfPostsCreatedBySelf || justAddedThumbsUp || ifUpdateNumberOfThumbsUp || ifUpdateNumberOfThumbsUpInv || justRemovedThumbsUp) {
                                                     goto LOAD;
                                                 }
                                                 mainMenu();
                                                 std::cout << "What do you plan to do today? " << endl;
                                             LOAD:
                                                 string decision;
-                                                if (!ifAfterAdd && !ifUpdateNumberOfLikes && !ifUpdateNumberOfLikesInv && !justAddedLike && !justRemovedLike && !quitToListOfPostsCreatedBySelf)
+                                                if (!ifAfterAdd && !ifUpdateNumberOfLikes && !ifUpdateNumberOfLikesInv && !justAddedLike && !justRemovedLike && !quitToListOfPostsCreatedBySelf && !justAddedThumbsUp && !ifUpdateNumberOfThumbsUp && !ifUpdateNumberOfThumbsUpInv && !justRemovedThumbsUp)
                                                     decision = "";
                                                 else {
                                                     decision = "3";
                                                     ifAfterAdd = false;
-                                                    quitToListOfPostsCreatedBySelf = false;
+                                                    quitToListOfPostsCreatedBySelf = false; 
                                                     goto LOAD_SELF_POST;
                                                 }
                                                 getline(cin, decision);
@@ -364,7 +337,7 @@ void main(void)
                                                                             ));
                                                                         }
                                                                         //copy the contents of a comment one by one.
-                                                                        if (justAddedLike || justRemovedLike) {
+                                                                        if (justAddedLike || justRemovedLike || justAddedThumbsUp || justRemovedThumbsUp) {
                                                                             goto JUMP_TO_SKIP;
                                                                         }
                                                                     }
@@ -423,13 +396,13 @@ void main(void)
                                                         //Display a prompt to the user on what he / she would like to do.
                                                         for (; ; ) {
                                                             viewPostMenu();
-                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv) {
+                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || ifUpdateNumberOfThumbsUp || ifUpdateNumberOfThumbsUpInv) {
                                                                 goto JUMP_TO_SKIP;
                                                             }
                                                             cout << "Your decision: ";
                                                         JUMP_TO_SKIP:
                                                             string what;
-                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike) {
+                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike || justAddedThumbsUp || ifUpdateNumberOfThumbsUp || ifUpdateNumberOfThumbsUpInv || justRemovedThumbsUp) {
                                                                 what = "2";
                                                                 goto RETRIEVE_FULL_DATA_UPDATE_LIKES;
                                                             }
@@ -448,10 +421,12 @@ void main(void)
                                                                     cout << "Please enter post number that you would like to open (Enter 1 to " << copy.length() << ")" << endl;
                                                                 RETRIEVE_FULL_DATA_UPDATE_LIKES:
                                                                     string item;
-                                                                    if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike) {
+                                                                    if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || justAddedLike || justRemovedLike || justAddedThumbsUp || ifUpdateNumberOfThumbsUp || ifUpdateNumberOfThumbsUpInv || justRemovedThumbsUp) {
                                                                         item = std::to_string(likeAppliesToPostNumber);
                                                                         justAddedLike = false;
                                                                         justRemovedLike = false;
+                                                                        justAddedThumbsUp = false; 
+                                                                        justRemovedThumbsUp = false; 
                                                                         goto TRANSFER_CONTROL_TO_TRY_BLOCK;
                                                                     }
                                                                     getline(cin, item);
@@ -464,7 +439,7 @@ void main(void)
                                                                             int numberOfLikes = 0;
                                                                             int numberOfThumbsUp = 0;
                                                                             LinkedList<Comment> listOfComments;
-                                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv) {
+                                                                            if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || ifUpdateNumberOfThumbsUp || ifUpdateNumberOfThumbsUpInv) {
                                                                                 system("cls");
                                                                                 Sleep(500);
                                                                                 goto BEFORE_READING_DATA;
@@ -494,7 +469,7 @@ void main(void)
                                                                                 cout << "Your choice: ";
                                                                             BEFORE_READING_DATA:
                                                                                 string selection = "";
-                                                                                if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv) {
+                                                                                if (ifUpdateNumberOfLikes || ifUpdateNumberOfLikesInv || ifUpdateNumberOfThumbsUp || ifUpdateNumberOfThumbsUpInv) {
                                                                                     selection = "2";
                                                                                     goto BEFORE_TRY;
                                                                                 }
@@ -509,6 +484,14 @@ void main(void)
                                                                                     else if (ifUpdateNumberOfLikesInv) {
                                                                                         ifUpdateNumberOfLikesInv = false;
                                                                                         goto BEGIN_ANALYZING_REMOVE_LIKE;
+                                                                                    }
+                                                                                    else if (ifUpdateNumberOfThumbsUp) {
+                                                                                        ifUpdateNumberOfThumbsUp = false; 
+                                                                                        goto BEGIN_ANALYZING_ADD_THUMBS_UP; 
+                                                                                    }
+                                                                                    else if (ifUpdateNumberOfThumbsUpInv) {
+                                                                                        ifUpdateNumberOfThumbsUpInv = false; 
+                                                                                        goto BEGIN_ANALYZING_REMOVE_THUMBS_UP; 
                                                                                     }
                                                                                     if (selectionToInteger == 0) {
                                                                                         system("cls");
@@ -534,7 +517,6 @@ void main(void)
                                                                                     }
                                                                                     else if (selectionToInteger == 2) {         //dislike a post
                                                                                         if (numberOfLikes > 0) {
-                                                                                            cout << "Came here to remove a like from the post" << endl;
                                                                                             ifUpdateNumberOfLikesInv = true;
                                                                                             likeAppliesToPostNumber = postIndex;
                                                                                             goto RETRIEVE_DATA_AGAIN;
@@ -542,21 +524,47 @@ void main(void)
                                                                                             SystemHashTable sysHashTable = convertToHashTable(document);
                                                                                             int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfLikes;
                                                                                             init -= 1;
-                                                                                            sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfLikes = init;
-                                                                                            sysHashTable.updateFile();
-                                                                                            justRemovedLike = true;
-                                                                                            likeAppliesToPostNumber = postIndex;
+                                                                                            if (init >= 0) {
+                                                                                                sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfLikes = init;
+                                                                                                sysHashTable.updateFile();
+                                                                                                justRemovedLike = true;
+                                                                                                likeAppliesToPostNumber = postIndex;
+                                                                                            } 
                                                                                             goto RETRIEVE_DATA_AGAIN;
                                                                                         }
                                                                                         //make no changes if the number of likes is 0 at start. 
                                                                                     }
                                                                                     else if (selectionToInteger == 3) {
                                                                                         //add a thumbs up to the post
-
+                                                                                        ifUpdateNumberOfThumbsUp = true; 
+                                                                                        likeAppliesToPostNumber = postIndex;  
+                                                                                        goto RETRIEVE_DATA_AGAIN; 
+                                                                                    BEGIN_ANALYZING_ADD_THUMBS_UP: 
+                                                                                        SystemHashTable sysHashTable = convertToHashTable(document); 
+                                                                                        int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfThumbsUp; 
+                                                                                        init += 1; 
+                                                                                        sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfThumbsUp = init; 
+                                                                                        sysHashTable.updateFile(); 
+                                                                                        justAddedThumbsUp = true; 
+                                                                                        likeAppliesToPostNumber = postIndex; 
+                                                                                        goto RETRIEVE_DATA_AGAIN; 
                                                                                     }
                                                                                     else if (selectionToInteger == 4) {
                                                                                         //remove a thumbs up from a post
-
+                                                                                        ifUpdateNumberOfThumbsUpInv = true; 
+                                                                                        likeAppliesToPostNumber = postIndex; 
+                                                                                    BEGIN_ANALYZING_REMOVE_THUMBS_UP: 
+                                                                                        SystemHashTable sysHashTable = convertToHashTable(document);
+                                                                                        int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfThumbsUp;
+                                                                                        init -= 1;
+                                                                                        if (init >= 0) {
+                                                                                            sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfThumbsUp = init;
+                                                                                            sysHashTable.updateFile();
+                                                                                            justRemovedThumbsUp = true;
+                                                                                            likeAppliesToPostNumber = postIndex;
+                                                                                        } 
+                                                                                        goto RETRIEVE_DATA_AGAIN;
+                                                                                        //make no changes if the number of thumbs up is 0 at the start. 
                                                                                     }
                                                                                     else if (selectionToInteger == 5) {
                                                                                         cout << "==========================COMMENTS============================" << endl;
@@ -718,51 +726,10 @@ void main(void)
                                                     //to implement
                                                     //load posts from others plus yourself.
                                                     //all data copied into sysHashTable.
-                                                    LinkedList<string> usernames = extractUsername(document);
-                                                    SystemHashTable  sysHashTable = convertToHashTable(document);
-                                                    LinkedList<Post> copy = LinkedList<Post>();
-                                                    for (int i = 0; i < usernames.length(); i++) {
-                                                        if (usernames.get(i) != user) {
-                                                            LinkedList<Post> pL = sysHashTable.get(usernames.get(i)).posts;
-                                                            for (int j = 0; j < pL.length(); j++) {
-                                                                copy.add(
-                                                                    Post(pL.get(j).title, pL.get(j).contents, pL.get(j).noOfLikes, pL.get(j).noOfThumbsUp, LinkedList<Comment>())
-                                                                );
-                                                            }
-                                                        }
-                                                    }
+                                                    SystemHashTable sysHashTable = convertToHashTable(document); 
 
-                                                    //Display the list of posts.
-                                                    for (int i = 0; i < copy.length(); i++) {
-                                                        std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-                                                        std::cout << "|Username: " << usernames.get(i) << "|" << endl;
-                                                        std::cout << "|Post number: " << std::to_string(i + 1) << "                                           |" << endl;
-                                                        std::cout << "|Title: " << copy.get(i).title << ([&copy, i] {
-                                                            int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).title.c_str()) + (std::strlen("Post number:") - std::strlen("Title:"));
-                                                        string out = "";
-                                                        for (int internal = 0; internal <= lenWs; internal++) {
-                                                            out += " ";
-                                                        }
-                                                        out += "|";
-                                                        return out;
-                                                            })() << endl;
-                                                            std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
-                                                                int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
-                                                            string out = "";
-                                                            for (int internal = 0; internal <= lenWs; internal++) {
-                                                                out += " ";
-                                                            }
-                                                            out += "|";
-                                                            return out;
-                                                                })() << endl;
-                                                                std::cout << "|Number of likes: " << std::to_string(copy.get(i).noOfLikes) << "                                       |" << endl;
-                                                                std::cout << "|Number of thumbs up: " << std::to_string(copy.get(i).noOfThumbsUp) << "                                   |" << endl;
-                                                                std::cout << "|Number of comments: " << std::to_string(copy.get(i).comment.length()) << "                                   |" << endl;
 
-                                                    }
-                                                    std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-                                                    std::cout << "______________________________________________________________" << endl;
-                                                    std::cout << "Number of posts: " << copy.length() << endl;
+                                                    
                                                 }
                                                 else if (decision == "5") {
                                                 LOAD_TOPIC:
@@ -904,14 +871,91 @@ void main(void)
                                 Sleep(500);
                                 break;
                             }
+                            else {
+                                std::system("cls"); 
+                                Sleep(500); 
+                                std::cout << "Sorry! The length of your password must be between 8 and 30 characters!" << std::endl; 
+                                std::cout << "Current length of the password: " << std::to_string(newAccountPassword.length()) << std::endl; 
+                            }
                         }
-                        snapshot.add(newAccountUsername, newAccountPassword);
-                        snapshot.updateFile();
                         std::system("cls");
                         Sleep(500);
-                        std::cout << "Successfully registered your account! Please try to log into the std::system using your new username and password" << endl;
-                        Sleep(2000);
-                        std::system("cls");
+                        for (; ; ) {
+                            std::cout << "Would you like to set a security question? " << std::endl;
+                            std::cout << "===========================================" << std::endl;
+                            std::cout << "[1] NO" << std::endl;
+                            std::cout << "[2] YES" << std::endl;
+                            std::cout << "===========================================" << std::endl;
+                            std::cout << "Your choice? ";
+                            string option = "";
+                            getline(cin, option);
+                            try {
+                                int b = atoi(option.c_str());
+                                if (b == 1) {
+                                    std::system("cls");
+                                    Sleep(500);
+                                    std::cout << "Successfully registered your account! Please try to log into the std::system using your new username and password" << endl;
+                                    Sleep(2000);
+                                    std::system("cls");
+                                    snapshot.add(newAccountUsername, newAccountPassword);
+                                    snapshot.updateFile();
+                                    break; 
+                                }
+                                else if (b == 2) {
+                                    for (; ; ) {
+                                        std::system("cls");
+                                        Sleep(500);
+                                        std::cout << "========================================================" << std::endl;
+                                        std::cout << "[1] Create your own security question" << std::endl;
+                                        std::cout << "[2] Select from a list of security questions" << std::endl;
+                                        std::cout << "========================================================" << std::endl;
+                                        std::cout << "Your choice? ";
+                                        string selection = "";
+                                        getline(cin, selection);
+                                        try {
+                                            int c = atoi(selection.c_str());
+                                            if (c == 1) {
+                                                std::cout << "Enter your security question: ";
+                                                string securityQuestion = "";
+                                                getline(cin, securityQuestion);
+                                                std::cout << std::endl; 
+                                                std::cout << "Provide an answer to your security question: "; 
+                                                string securityQuestionAnswer = ""; 
+                                                getline(cin, securityQuestionAnswer); 
+                                                snapshot.add(newAccountUsername, newAccountPassword); 
+                                                snapshot.updateFile(); 
+                                                //read from file. 
+                                                ifstream GetSecurityQuestions("security.dat");
+
+                                            }
+                                            else if (c == 2) {
+                                                std::cout << "==================================================================================" << std::endl;
+                                                std::cout << "[1] What city were you born in?" << std::endl; 
+                                                std::cout << "[2] What is your oldest sibling’s middle name?" << std::endl; 
+                                                std::cout << "[3] What was the first concert you attended?" << std::endl; 
+                                                std::cout << "[4] What was the make and model of your first car?" << std::endl; 
+                                                std::cout << "[5] What was your childhood nickname?" << std::endl; 
+                                                std::cout << "[6] What street did you live on in third grade?" << std::endl; 
+                                                std::cout << "[7] What school did you attend for sixth grade?" << std::endl; 
+                                                std::cout << "[8] What was the last name of your third grade teacher?" << std::endl; 
+                                                std::cout << "[9] What was your childhood phone number including area code? (e.g., 000-000-0000)" << std::endl; 
+                                                std::cout << "[10] What was the name of your elementary / primary school?" << std::endl; 
+                                                std::cout << "[11] What is the name of the company of your first job?" << std::endl; 
+                                                std::cout << "[12] What was your dream job as a child?" << std::endl; 
+                                                std::cout << "[13] " << std::endl; 
+                                                std::cout << "==================================================================================" << std::endl;
+                                            }
+                                        }
+                                        catch (exception e) {
+                                            std::cout << "Invalid option. Please try again!" << std::endl;
+                                        }
+                                    } 
+                                }
+                            }
+                            catch (exception e) {
+                                std::cout << "Invalid option. Please try again!" << std::endl; 
+                            }
+                        } 
                     }
                 }
                 else {   //if file does not exist
@@ -938,6 +982,14 @@ void main(void)
             }
             else if (a == 4) {
                 //Reset password
+                //for security purposes we are going to use another file to write and store the security question. 
+                ifstream SecurityQn("security.dat");
+                LinkedList<string> fileContents = LinkedList<string>(); 
+                string temporalStorage = ""; 
+                while (getline(SecurityQn, temporalStorage)) {
+                    fileContents.add(temporalStorage); 
+                }
+
                 system("cls");
                 Sleep(500);
                 cout << "Please enter the username of your account: " << endl;
@@ -950,12 +1002,18 @@ void main(void)
                 cout << "1) No part of this software shall be distributed without prior permission from the developers." << endl;
                 
             }
+            else {
+                std::cout << "Invalid option please try again!" << std::endl; 
+                Sleep(2000); 
+                std::system("cls"); 
+                Sleep(500); 
+            }
         }
         catch (exception e) {
-            const char* varcstr = var.c_str();
-            for (int i = 0; i < strlen(varcstr); i++) {
-
-            }
+            std::cout << "Invalid option please try again!" << std::endl; 
+            Sleep(2000); 
+            std::system("cls"); 
+            Sleep(500); 
         }
     }
 }
