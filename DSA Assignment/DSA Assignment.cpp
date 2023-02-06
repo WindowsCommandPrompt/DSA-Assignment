@@ -59,6 +59,9 @@ void mainMenu(void) {
     std::cout << "# [3] Browse my posts                                     #" << endl; 
     std::cout << "# [4] Explore other people's posts                        #" << endl; 
     std::cout << "# [5] Explore all topics                                  #" << endl;
+    std::cout << "# [6] Search for topics                                   #" << endl;
+    std::cout << "# [7] Search for posts                                    #" << endl;
+    std::cout << "# [8] Search for users                                    #" << endl;
     std::cout << "===========================================================" << endl; 
 }
 
@@ -82,6 +85,38 @@ void expandComments(void) {
     std::cout << "# [7] Edit Post                                           #" << endl;
     std::cout << "# [8] Delete Post                                         #" << endl;
     std::cout << "===========================================================" << endl; 
+}
+
+LinkedList<string> extractUsername(rapidjson::Document& rawData) {
+    LinkedList<string> usersOfThePlatform = LinkedList<string>(); 
+    if (rawData.IsArray()) {
+        for (SizeType i = 0; i < rawData.Size(); i++) {
+            usersOfThePlatform.add(rawData[i]["Username"].GetString()); 
+        }
+    }
+    return usersOfThePlatform; 
+}
+
+int search(int dataArray[], int arraySize, int target) {
+
+    for (int i = 0; i < arraySize; i++) {
+        if (dataArray[i] == target) // found 
+        {
+            return i;
+        }
+        else if (dataArray[i] > target)
+        {
+            // not found  
+            return -1;
+        }
+
+        //// 
+        //if (dataArray[i] != target) {
+        //    comparisons++;  // increase the comparsion each time an comparison is made
+        //}
+    }
+
+    return -1; // not found
 }
 
 SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
@@ -862,6 +897,57 @@ void main(void)
                                                         std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
                                                         std::cout << "______________________________________________________________" << endl;
                                                         std::cout << "Number of Topics: " << copy.length() << endl;
+                                                }
+                                                else if (decision == "6") {
+                                                    int targetTopic;
+                                                    cout << "search for topics" << endl;
+                                                    cout << "Please enter the topic number to search (eg. 1,2)" << endl;
+                                                    cin >> targetTopic;
+                                                    int target = targetTopic;
+                                                    Post p;
+                                                    int arraySize = p.topic.length();
+                                                    int dataArray[] = {1,2,3,4,5};
+                                                    int res = search(dataArray, arraySize, target);
+                                                    if (res != -1) {
+                                                        cout << "The target value: " << target << " is found  " << endl;
+                                                    }
+                                                    else {
+                                                        cout << "The target value: " << target << " is not found " << endl;
+                                                    }
+                                                }
+                                                else if (decision == "7") {
+                                                    int targetPost;
+                                                    cout << "search for posts" << endl;
+                                                    cout << "Please enter the post number to search (eg. 1,2)" << endl;
+                                                    cin >> targetPost;
+                                                    int target = targetPost;
+                                                    Post p;
+                                                    int arraySize = 5;
+                                                    int dataArray[] = { 1,2,3,4,5 };
+                                                    int res = search(dataArray, arraySize, target);
+                                                    if (res != -1) {
+                                                        cout << "The target value: " << target << " is found  " << endl;
+                                                    }
+                                                    else {
+                                                        cout << "The target value: " << target << " is not found " << endl;
+                                                    }
+                                                }
+                                                else if (decision == "8") {
+                                                    int targetUsers;
+                                                    cout << "search for users" << endl;
+                                                    cout << "Please enter the username to search (eg. John, Minteck)" << endl;
+                                                    cin >> targetUsers;
+                                                    int target = targetUsers;
+                                                    string user;
+                                                    /*int arraySize = 5;
+                                                    SystemUser dataArray = dataArray.username;*/
+                                                    /*int res = search(dataArray, arraySize, target);
+                                                    if (res != -1) {
+                                                        cout << "The target value: " << target << " is found  " << endl;
+                                                    }
+                                                    else {
+                                                        cout << "The target value: " << target << " is not found " << endl;
+                                                    }*/
                                                 }
                                             }
                                         }
