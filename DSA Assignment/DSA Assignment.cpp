@@ -616,8 +616,11 @@ void main(void)
                                                                                     }
                                                                                     else if (selectionToInteger == 7) {
                                                                                         cout << "===================Edit Post=================" << endl;
+                                                                                        string newPostTitle;
                                                                                         string newPostContents;
-                                                                                        cout << "Please enter new post contents" << endl;
+                                                                                        cout << "Please enter new post title: " << endl;
+                                                                                        getline(cin, newPostTitle);
+                                                                                        cout << "Please enter new post contents:" << endl;
                                                                                         getline(cin, newPostContents);
                                                                                         std::cout << "YOUR NEW POST: " << endl;
                                                                                         std::cout << "====================================" << endl;
@@ -639,7 +642,8 @@ void main(void)
                                                                                             Sleep(500);
                                                                                             std::cout << "UPDATING YOUR POST.." << endl;
                                                                                             SystemHashTable snapshot = convertToHashTable(document);
-                                                                                            //snapshot.get(username).posts.(Post(postTitle, postContents)); //add the new post accordingly.
+                                                                                            Post edited(newPostTitle,newPostContents);
+                                                                                            snapshot.get(username).posts.replace(0,edited); //add the new post accordingly.
                                                                                             snapshot.updateFile();
                                                                                             std::system("cls");
                                                                                             Sleep(500);

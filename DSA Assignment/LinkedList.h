@@ -211,6 +211,18 @@ public:
 			return false;
 		}
 	}
+	void replace(int index, T item)
+	{
+		Node* temp = firstNode;
+
+		for (int i = 0; i < index; i++)  // move to node at specified index
+		{
+			temp = temp->next;
+		}
+
+		temp->item = item;           // replace the item  
+	}
+
 
 	bool contains(const T target) {
 		Node* firstNode = this->firstNode;
