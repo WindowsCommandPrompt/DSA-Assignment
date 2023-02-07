@@ -765,7 +765,7 @@ void main(void)
                                                         }
                                                     }
                                                     int postNumber = 1;
-                                                    LinkedList<int> indices = LinkedList<int>();
+                                                    
                                                     for (int i = 0; i < usernames.length(); i++) {
                                                         LinkedList<Post> post = sysHashTable.get(usernames.get(i)).posts;
                                                         /*if (i != 0) indices.add(post.length());*/
@@ -800,12 +800,8 @@ void main(void)
                                                             }
                                                             else if (c == 2) {      //Prompt the user for the post index
                                                                 std::cout << "Please enter post number that you would like to open (Enter 1 to " << postNumber - 1 << ")" << endl;
-                                                                /*    int largest = 0;
-                                                                for (int i = 0; i < indices.length(); i++) {
-                                                                    largest = indices.get(i) > largest ? indices.get(i) : indices.get(i) == largest ? largest : largest;
-                                                                }
-                                                                return largest;
-                                                                    })() << ")"*/ 
+                                                                string decision;
+                                                                getline(cin, decision);
 
                                                             }
                                                             else {
