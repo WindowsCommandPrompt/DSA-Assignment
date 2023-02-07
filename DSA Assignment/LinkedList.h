@@ -1,3 +1,9 @@
+// ==================================================================
+// Student Number : S10228079B, S10222023J
+// Student Name :   Ho Min Teck, Li Zhe Yun 
+// Module Group :   P03
+// ==================================================================
+
 #pragma once
 
 #include <iostream>
@@ -6,17 +12,17 @@
 template <class T> 
 class LinkedList
 {
-private: 
+
+public:
 	struct Node {
-		T item; 
-		Node* next; 
+		T item;
+		Node* next;
 	};
 
 
-	Node* firstNode; 
-	int size; 
+	Node* firstNode;
+	int size;
 
-public:
 	LinkedList(const LinkedList&) = default; 
 	LinkedList& operator=(const LinkedList&) = default; 
 	//LINKED LIST DEFINITION....
@@ -51,7 +57,7 @@ public:
 			}
 		} while (this->size > 0);
 	}
-	T& get1(int index) {
+	T& get1(int index) {  // LinkedList<Post> get post
 		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
 			if (index == 0) {
 				return firstNode->item;
@@ -68,7 +74,7 @@ public:
 		}
 	}
 
-	T&& get2(int index) {			//For LinkedList<Reply>
+	T&& get2(int index) {			//For LinkedList<Comment>
 		if (index >= 0) { //Index of first element begins at 0, no negative numbers allowed here
 			if (index == 0) {
 				return firstNode->item;
@@ -85,7 +91,7 @@ public:
 		}
 	}
 
-	T&& get(int index) {
+	T&& get(int index) {             // move the get using moving semantics.
 		if (index >= 0) { 
 			if (index == 0) {
 				return std::move(firstNode->item);
@@ -102,11 +108,12 @@ public:
 		}
 	}
 
-
+	// isEmpty method
 	bool isEmpty(void) {
 		return this->firstNode == nullptr && this->size == 0;
 	}
 
+	// check for length 
 	int length(void) {
 		return this->size;
 	}
@@ -181,8 +188,37 @@ public:
 		this->size++;
 		return inRange;
 	}
+	
+	 // remove an item at a specified position in the list
+	bool remove(int index)
+	{
+		if (index < size && index >= 0) {
 
-	bool remove(int index) {
+			if (index == 0) {
+				firstNode = firstNode->next;
+				firstNode->next = firstNode->next;
+			}
+			else
+			{
+				Node* current = firstNode;
+				for (int i = 0; i < index - 1; i++)
+				{
+					current = current->next;
+				}
+				Node* delNode = current->next;
+				current->next = current->next->next;
+				delNode->next = nullptr;
+				delete delNode;
+				size--;
+				return true;
+			}
+		}
+		else {
+			return false;
+		}
+	}
+
+	bool remove2(int index) {
 		if (index >= 0) {
 			if (index == 0) {
 				Node* current = this->firstNode;
@@ -211,6 +247,7 @@ public:
 			return false;
 		}
 	}
+	// for edit post
 	void replace(int index, T item)
 	{
 		Node* temp = firstNode;
@@ -229,6 +266,17 @@ public:
 		while (firstNode) {
 			firstNode = firstNode->next;
 			if (firstNode->item == target) return true;
+		}
+		return false;
+	}
+	// for searching of post
+	bool search(Node* post, int target)
+	{
+		Node* current = post; // Initialize current
+		while (current != NULL) {
+			if (current->item == target)
+				return true;
+			current = current->next;
 		}
 		return false;
 	}

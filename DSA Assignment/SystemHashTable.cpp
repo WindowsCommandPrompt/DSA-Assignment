@@ -1,4 +1,9 @@
-// Completed by Ho Min Teck and Li Zhe Yun 
+// ==================================================================
+// Student Number : S10228079B, S10222023J
+// Student Name :   Ho Min Teck, Li Zhe Yun 
+// Module Group :   P03
+// ==================================================================
+
 #define RAPIDJSON_HAS_STDSTRING 1
 
 #include "SystemHashTable.h"
@@ -12,7 +17,7 @@
 
 
 SystemHashTable::SystemHashTable(void) {
-	//array but using linked list from LinkedListTrackPost.
+	//array but using linked list from LinkedList.h.
 	std::fill_n(this->items, MAX_ITEMS, nullptr); 
 }
 
@@ -22,10 +27,12 @@ SystemHashTable::~SystemHashTable(void)
 
 }
 
+// get the char value of the hash function
 int SystemHashTable::charvalue(char c) {
 	return (int)c; 
 }
 
+// check if the key in the items index. used for checking the hashtable contains a certain key i.e. username
 bool SystemHashTable::contains(string key) {
 	int index = this->hash(key); 
 	if (this->items[index] == nullptr) return false; 
@@ -63,6 +70,7 @@ int SystemHashTable::hash(string key)
 	return 	characters % MAX_ITEMS;
 }
 
+// add the new users into the hash table
 bool SystemHashTable::add(string newUser, string password, LinkedList<Post> posts) {
 	// Compute the index using hash function 
 	int index = hash(newUser);
@@ -90,7 +98,7 @@ bool SystemHashTable::add(string newUser, string password, LinkedList<Post> post
 	}
 	return true;
 }
-
+// add the new users into the hash table
 bool SystemHashTable::add(string newUser, string password)
 {
 	// Compute the index using hash function 
@@ -119,7 +127,7 @@ bool SystemHashTable::add(string newUser, string password)
 	}
 	return true;
 }
-
+// remove the new topic into the hash table
 bool SystemHashTable::remove(string key)
 {
 	int index = hash(key);							//hash the key to get the index position within the array.... 
@@ -158,7 +166,7 @@ bool SystemHashTable::remove(string key)
 	}
 	else return false; 
 }
-
+// get the users from the hash table
 SystemUser& SystemHashTable::get(string key)
 {
 	if (this->items[hash(key)] != nullptr) {
@@ -171,7 +179,7 @@ SystemUser& SystemHashTable::get(string key)
 	}
 }
 
-
+// update the users into the file
 void SystemHashTable::updateFile(void) { 
 	rapidjson::Document newJSONDocument;
 	auto& allocator = newJSONDocument.GetAllocator(); 

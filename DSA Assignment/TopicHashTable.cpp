@@ -1,5 +1,11 @@
+// ==================================================================
+// Student Number : S10228079B, S10222023J
+// Student Name :   Ho Min Teck, Li Zhe Yun 
+// Module Group :   P03
+// ==================================================================
 #define RAPIDJSON_HAS_STDSTRING 1
 
+// include header files
 #include "TopicHashTable.h"
 #include <string>
 #include <fstream> 
@@ -11,6 +17,7 @@
 #include "Comment.h"
 
 
+// constructor 
 TopicHashTable::TopicHashTable(void) {
 	std::fill_n(this->items, MAX_ITEMS, nullptr);
 }
@@ -20,10 +27,12 @@ TopicHashTable::~TopicHashTable(void) {
 
 }
 
+// hash function to get char values
 int TopicHashTable::charvalue(char c) {
 	return (int)c;
 }
 
+// to check whether it contains the key.
 bool TopicHashTable::contains(string key) {
 	int index = this->hash(key);
 	if (this->items[index] == nullptr) return false;
@@ -60,6 +69,7 @@ int TopicHashTable::hash(string key) {
 	return topicChar % MAX_ITEMS;
 }
 
+// add the new topic into the hash table
 bool TopicHashTable::add(string newTopic, LinkedList<Post> postUnderTopic) {
 	// Compute the index using hash function
 	int index = hash(newTopic);
@@ -85,7 +95,7 @@ bool TopicHashTable::add(string newTopic, LinkedList<Post> postUnderTopic) {
 	}
 	return true;
 }
-
+// remove the topic from the hash table 
 bool TopicHashTable::remove(string key) {
 	int index = hash(key);
 	if (items[index] != NULL) {
@@ -118,7 +128,7 @@ bool TopicHashTable::remove(string key) {
 	}
 	else return false;
 }
-
+// get the topic from the hash table
 Post& TopicHashTable::get(string key) {
 	if (this->items[hash(key)] != nullptr) {
 		Node* firstItem = this->items[hash(key)];
@@ -130,6 +140,7 @@ Post& TopicHashTable::get(string key) {
 	}
 }
 
+// update the topic into the hash table 
 void TopicHashTable::updateFile(void) {
 	rapidjson::Document newJSONDocument;
 	auto& allocator = newJSONDocument.GetAllocator();
