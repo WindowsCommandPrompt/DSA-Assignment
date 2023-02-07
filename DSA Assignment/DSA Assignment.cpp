@@ -1,4 +1,4 @@
-// DSA Assignment.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// DSA Assignment.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
 #define RAPIDJSON_HAS_STDSTRING 1
@@ -19,82 +19,82 @@
 #include "rapidjson/stringbuffer.h"
 #include <string>
 
-using namespace std; 
-using namespace rapidjson; 
+using namespace std;
+using namespace rapidjson;
 
-static string user = ""; 
-static bool ifAfterAdd = false; 
-static bool ifUpdateNumberOfLikes = false; 
-static bool ifUpdateNumberOfLikesInv = false; 
-static bool quitToListOfPostsCreatedBySelf = false; 
-static bool justAddedLike = false; 
-static bool justRemovedLike = false; 
-static bool justAddedThumbsUp = false; 
+static string user = "";
+static bool ifAfterAdd = false;
+static bool ifUpdateNumberOfLikes = false;
+static bool ifUpdateNumberOfLikesInv = false;
+static bool quitToListOfPostsCreatedBySelf = false;
+static bool justAddedLike = false;
+static bool justRemovedLike = false;
+static bool justAddedThumbsUp = false;
 static bool justRemovedThumbsUp = false;
-static bool ifUpdateNumberOfThumbsUp = false; 
-static bool ifUpdateNumberOfThumbsUpInv = false; 
-static int likeAppliesToPostNumber = 0; 
+static bool ifUpdateNumberOfThumbsUp = false;
+static bool ifUpdateNumberOfThumbsUpInv = false;
+static int likeAppliesToPostNumber = 0;
 
 void login(void) {
     //Print out some kind of menu like thing
     std::cout << "===========================================================" << endl;
     std::cout << "#         WELCOME TO THE PRO EDUCATIONIST FORUM!!!        #" << endl;
     std::cout << "#                                                         #" << endl;
-    std::cout << "# [0] Quit Program                                        #" << endl; 
-    std::cout << "# [1] Login into an account                               #" << endl; 
-    std::cout << "# [2] Temporarily disable account                         #" << endl; 
-    std::cout << "# [3] Create a new account                                #" << endl; 
-    std::cout << "# [4] Forgot my account credentials                       #" << endl; 
-    std::cout << "# [5] Privacy policy                                      #" << endl;  
-    std::cout << "===========================================================" << endl; 
-} 
+    std::cout << "# [0] Quit Program                                        #" << endl;
+    std::cout << "# [1] Login into an account                               #" << endl;
+    std::cout << "# [2] Temporarily disable account                         #" << endl;
+    std::cout << "# [3] Create a new account                                #" << endl;
+    std::cout << "# [4] Forgot my account credentials                       #" << endl;
+    std::cout << "# [5] Privacy policy                                      #" << endl;
+    std::cout << "===========================================================" << endl;
+}
 
 //main user interface once the 
 void mainMenu(void) {
-    std::cout << "Hello, " << user << endl; 
-    std::cout << "===========================================================" << endl; 
-    std::cout << "# [0] Logout                                              #" << endl; 
+    std::cout << "Hello, " << user << endl;
+    std::cout << "===========================================================" << endl;
+    std::cout << "# [0] Logout                                              #" << endl;
     std::cout << "# [1] Create a new topic                                  #" << endl;
     std::cout << "# [2] Create a new post                                   #" << endl;
-    std::cout << "# [3] Browse my posts                                     #" << endl; 
-    std::cout << "# [4] Explore other people's posts                        #" << endl; 
+    std::cout << "# [3] Browse my posts                                     #" << endl;
+    std::cout << "# [4] Explore other people's posts                        #" << endl;
     std::cout << "# [5] Explore all topics                                  #" << endl;
     std::cout << "# [6] Search for topics                                   #" << endl;
     std::cout << "# [7] Search for posts                                    #" << endl;
     std::cout << "# [8] Search for users                                    #" << endl;
-    std::cout << "===========================================================" << endl; 
+    std::cout << "===========================================================" << endl;
 }
 
 void viewPostMenu(void) {
-    std::cout << "===========================================================" << endl; 
-    std::cout << "# [0] Exit to the main menu                               #" << endl; 
-    std::cout << "# [1] Exit to posts list                                  #" << endl; 
-    std::cout << "# [2] Open a post                                         #" << endl; 
+    std::cout << "===========================================================" << endl;
+    std::cout << "# [0] Exit to the main menu                               #" << endl;
+    std::cout << "# [1] Exit to posts list                                  #" << endl;
+    std::cout << "# [2] Open a post                                         #" << endl;
     std::cout << "===========================================================" << endl;
 }
 
 void expandComments(void) {
-    std::cout << "===========================================================" << endl; 
-    std::cout << "# [0] Exit to post                                        #" << endl; 
+    std::cout << "===========================================================" << endl;
+    std::cout << "# [0] Exit to post                                        #" << endl;
     std::cout << "# [1] Like a post                                         #" << endl;
     std::cout << "# [2] Disike a post                                       #" << endl;
-    std::cout << "# [3] Add a thumbs up                                     #" << endl; 
-    std::cout << "# [4] Remove a thumbs up                                  #" << endl; 
+    std::cout << "# [3] Add a thumbs up                                     #" << endl;
+    std::cout << "# [4] Remove a thumbs up                                  #" << endl;
     std::cout << "# [5] Expand comments                                     #" << endl;
     std::cout << "# [6] Reply to post                                       #" << endl;
     std::cout << "# [7] Edit Post                                           #" << endl;
     std::cout << "# [8] Delete Post                                         #" << endl;
-    std::cout << "===========================================================" << endl; 
+    std::cout << "===========================================================" << endl;
 }
 
 LinkedList<string> extractUsername(rapidjson::Document& rawData) {
-    LinkedList<string> usersOfThePlatform = LinkedList<string>(); 
+    LinkedList<string> usersOfThePlatform = LinkedList<string>();
     if (rawData.IsArray()) {
         for (SizeType i = 0; i < rawData.Size(); i++) {
-            usersOfThePlatform.add(rawData[i]["Username"].GetString()); 
+            usersOfThePlatform.add(rawData[i]["Username"].GetString());
         }
     }
-    return usersOfThePlatform; 
+    return usersOfThePlatform;
 }
 
 int search(int dataArray[], int arraySize, int target) {
@@ -120,16 +120,16 @@ int search(int dataArray[], int arraySize, int target) {
 }
 
 SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
-    SystemHashTable out = SystemHashTable(); 
+    SystemHashTable out = SystemHashTable();
     if (rawData.IsArray()) {
         for (SizeType i = 0; i < rawData.Size(); i++) {
             out.add(
                 rawData[i]["User"]["Username"].GetString(),
                 rawData[i]["User"]["Password"].GetString(),
-                LinkedList<Post>() 
-            ); 
+                LinkedList<Post>()
+            );
             if (rawData[i]["User"]["Posts"].IsArray()) {
-                for (SizeType j = 0; j < rawData[i]["User"]["Posts"].Size(); j++) { 
+                for (SizeType j = 0; j < rawData[i]["User"]["Posts"].Size(); j++) {
                     out.get(rawData[i]["Username"].GetString()).posts.add(
                         Post(
                             rawData[i]["User"]["Posts"][j]["Title"].GetString(),
@@ -138,18 +138,19 @@ SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
                             rawData[i]["User"]["Posts"][j]["NumberOfThumbsUp"].GetInt64(),
                             LinkedList<Comment>()
                         )
-                    ); 
+                    );
                     if (rawData[i]["User"]["Posts"][j]["Comments"].IsArray()) {
-                        for (SizeType k = 0; k < rawData[i]["User"]["Posts"][j]["Comments"].Size(); k++) {; 
-                        out.get(rawData[i]["Username"].GetString()).posts.get(j).comment.add(
-                            Comment(
-                                rawData[i]["User"]["Posts"][j]["Comments"][k]["Content"].GetString(),
-                                rawData[i]["User"]["Posts"][j]["Comments"][k]["Username"].GetString(),
-                                rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfLikes"].GetInt64(),
-                                rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfThumbsUp"].GetInt64()
-                                
+                        for (SizeType k = 0; k < rawData[i]["User"]["Posts"][j]["Comments"].Size(); k++) {
+                            ;
+                            out.get(rawData[i]["Username"].GetString()).posts.get(j).comment.add(
+                                Comment(
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["Content"].GetString(),
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["Username"].GetString(),
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfLikes"].GetInt64(),
+                                    rawData[i]["User"]["Posts"][j]["Comments"][k]["NumberOfThumbsUp"].GetInt64()
+
                                 )
-                            ); 
+                            );
                         }
                     }
 
@@ -176,7 +177,7 @@ SystemHashTable convertToHashTable(rapidjson::Document& rawData) {
             }
         }
     }
-    return out; 
+    return out;
 }
 
 
@@ -237,7 +238,7 @@ void main(void)
                                                 else {
                                                     decision = "3";
                                                     ifAfterAdd = false;
-                                                    quitToListOfPostsCreatedBySelf = false; 
+                                                    quitToListOfPostsCreatedBySelf = false;
                                                     goto LOAD_SELF_POST;
                                                 }
                                                 getline(cin, decision);
@@ -290,7 +291,7 @@ void main(void)
                                                             std::system("cls");
                                                             Sleep(500);
                                                             ifAfterAdd = true;
-                                                            
+
                                                         }
                                                     }
 
@@ -334,7 +335,7 @@ void main(void)
                                                             std::system("cls");
                                                             Sleep(500);
                                                             std::cout << "POSTING...." << endl;
-                                                            SystemHashTable snapshot = convertToHashTable(document); 
+                                                            SystemHashTable snapshot = convertToHashTable(document);
                                                             snapshot.get(username).posts.add(Post(postTitle, postContents)); //add the new post accordingly.
                                                             snapshot.updateFile();
                                                             std::system("cls");
@@ -395,21 +396,21 @@ void main(void)
                                                             std::cout << "|Post number: " << std::to_string(i + 1) << "                                           |" << endl;
                                                             std::cout << "|Title: " << copy.get(i).title << ([&copy, i] {
                                                                 int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).title.c_str()) + (std::strlen("Post number:") - std::strlen("Title:"));
+                                                            string out = "";
+                                                            for (int internal = 0; internal <= lenWs; internal++) {
+                                                                out += " ";
+                                                            }
+                                                            out += "|";
+                                                            return out;
+                                                                })() << endl;
+                                                                std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
+                                                                    int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
                                                                 string out = "";
                                                                 for (int internal = 0; internal <= lenWs; internal++) {
                                                                     out += " ";
                                                                 }
                                                                 out += "|";
                                                                 return out;
-                                                                })() << endl;
-                                                                std::cout << "|Contents: " << copy.get(i).contents << ([&copy, i] {
-                                                                    int lenWs = std::strlen("                                           ") - std::strlen(copy.get(i).contents.c_str()) + (std::strlen("Post number:") - std::strlen("Contents:"));
-                                                                    string out = "";
-                                                                    for (int internal = 0; internal <= lenWs; internal++) {
-                                                                        out += " ";
-                                                                    }
-                                                                    out += "|";
-                                                                    return out;
                                                                     })() << endl;
                                                                     std::cout << "|Number of likes: " << std::to_string(copy.get(i).noOfLikes) << "                                       |" << endl;
                                                                     std::cout << "|Number of thumbs up: " << std::to_string(copy.get(i).noOfThumbsUp) << "                                   |" << endl;
@@ -451,8 +452,8 @@ void main(void)
                                                                         item = std::to_string(likeAppliesToPostNumber);
                                                                         justAddedLike = false;
                                                                         justRemovedLike = false;
-                                                                        justAddedThumbsUp = false; 
-                                                                        justRemovedThumbsUp = false; 
+                                                                        justAddedThumbsUp = false;
+                                                                        justRemovedThumbsUp = false;
                                                                         goto TRANSFER_CONTROL_TO_TRY_BLOCK;
                                                                     }
                                                                     getline(cin, item);
@@ -512,12 +513,12 @@ void main(void)
                                                                                         goto BEGIN_ANALYZING_REMOVE_LIKE;
                                                                                     }
                                                                                     else if (ifUpdateNumberOfThumbsUp) {
-                                                                                        ifUpdateNumberOfThumbsUp = false; 
-                                                                                        goto BEGIN_ANALYZING_ADD_THUMBS_UP; 
+                                                                                        ifUpdateNumberOfThumbsUp = false;
+                                                                                        goto BEGIN_ANALYZING_ADD_THUMBS_UP;
                                                                                     }
                                                                                     else if (ifUpdateNumberOfThumbsUpInv) {
-                                                                                        ifUpdateNumberOfThumbsUpInv = false; 
-                                                                                        goto BEGIN_ANALYZING_REMOVE_THUMBS_UP; 
+                                                                                        ifUpdateNumberOfThumbsUpInv = false;
+                                                                                        goto BEGIN_ANALYZING_REMOVE_THUMBS_UP;
                                                                                     }
                                                                                     if (selectionToInteger == 0) {
                                                                                         system("cls");
@@ -555,31 +556,31 @@ void main(void)
                                                                                                 sysHashTable.updateFile();
                                                                                                 justRemovedLike = true;
                                                                                                 likeAppliesToPostNumber = postIndex;
-                                                                                            } 
+                                                                                            }
                                                                                             goto RETRIEVE_DATA_AGAIN;
                                                                                         }
                                                                                         //make no changes if the number of likes is 0 at start. 
                                                                                     }
                                                                                     else if (selectionToInteger == 3) {
                                                                                         //add a thumbs up to the post
-                                                                                        ifUpdateNumberOfThumbsUp = true; 
-                                                                                        likeAppliesToPostNumber = postIndex;  
-                                                                                        goto RETRIEVE_DATA_AGAIN; 
-                                                                                    BEGIN_ANALYZING_ADD_THUMBS_UP: 
-                                                                                        SystemHashTable sysHashTable = convertToHashTable(document); 
-                                                                                        int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfThumbsUp; 
-                                                                                        init += 1; 
-                                                                                        sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfThumbsUp = init; 
-                                                                                        sysHashTable.updateFile(); 
-                                                                                        justAddedThumbsUp = true; 
-                                                                                        likeAppliesToPostNumber = postIndex; 
-                                                                                        goto RETRIEVE_DATA_AGAIN; 
+                                                                                        ifUpdateNumberOfThumbsUp = true;
+                                                                                        likeAppliesToPostNumber = postIndex;
+                                                                                        goto RETRIEVE_DATA_AGAIN;
+                                                                                    BEGIN_ANALYZING_ADD_THUMBS_UP:
+                                                                                        SystemHashTable sysHashTable = convertToHashTable(document);
+                                                                                        int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfThumbsUp;
+                                                                                        init += 1;
+                                                                                        sysHashTable.get(user).posts.get1(likeAppliesToPostNumber - 1).noOfThumbsUp = init;
+                                                                                        sysHashTable.updateFile();
+                                                                                        justAddedThumbsUp = true;
+                                                                                        likeAppliesToPostNumber = postIndex;
+                                                                                        goto RETRIEVE_DATA_AGAIN;
                                                                                     }
                                                                                     else if (selectionToInteger == 4) {
                                                                                         //remove a thumbs up from a post
-                                                                                        ifUpdateNumberOfThumbsUpInv = true; 
-                                                                                        likeAppliesToPostNumber = postIndex; 
-                                                                                    BEGIN_ANALYZING_REMOVE_THUMBS_UP: 
+                                                                                        ifUpdateNumberOfThumbsUpInv = true;
+                                                                                        likeAppliesToPostNumber = postIndex;
+                                                                                    BEGIN_ANALYZING_REMOVE_THUMBS_UP:
                                                                                         SystemHashTable sysHashTable = convertToHashTable(document);
                                                                                         int init = sysHashTable.get(user).posts.get(likeAppliesToPostNumber - 1).noOfThumbsUp;
                                                                                         init -= 1;
@@ -588,7 +589,7 @@ void main(void)
                                                                                             sysHashTable.updateFile();
                                                                                             justRemovedThumbsUp = true;
                                                                                             likeAppliesToPostNumber = postIndex;
-                                                                                        } 
+                                                                                        }
                                                                                         goto RETRIEVE_DATA_AGAIN;
                                                                                         //make no changes if the number of thumbs up is 0 at the start. 
                                                                                     }
@@ -613,13 +614,13 @@ void main(void)
                                                                                     }
                                                                                     else if (selectionToInteger == 6) {
                                                                                         cout << "==========================REPLY TO A POST: ============================" << endl;
-                                                                                        
+
                                                                                         string commentsContents;
                                                                                         cout << "Please enter your comments" << endl;
                                                                                         getline(cin, commentsContents);
                                                                                         std::cout << "YOUR COMMENT: " << endl;
                                                                                         std::cout << "=====================================================" << endl;
-                                                                                       
+
                                                                                         std::cout << "Contents: " << commentsContents << endl;
                                                                                         std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
                                                                                         std::cout << "[0] Exit to the main menu (Your changes will be lost)" << endl;
@@ -640,12 +641,12 @@ void main(void)
                                                                                             std::cout << "POSTING YOUR COMMENT.." << endl;
                                                                                             SystemHashTable snapshot = convertToHashTable(document);
                                                                                             snapshot.get(username).posts.get(0).comment.add(Comment
-                                                                                             (commentsContents,username));
+                                                                                            (commentsContents, username));
                                                                                             snapshot.updateFile();
                                                                                             std::system("cls");
                                                                                             Sleep(500);
                                                                                             ifAfterAdd = true;
-                                                                                            
+
                                                                                         }
                                                                                     }
                                                                                     else if (selectionToInteger == 7) {
@@ -676,8 +677,8 @@ void main(void)
                                                                                             Sleep(500);
                                                                                             std::cout << "UPDATING YOUR POST.." << endl;
                                                                                             SystemHashTable snapshot = convertToHashTable(document);
-                                                                                            Post edited(newPostTitle,newPostContents);
-                                                                                            snapshot.get(username).posts.replace(0,edited); //add the new post accordingly.
+                                                                                            Post edited(newPostTitle, newPostContents);
+                                                                                            snapshot.get(username).posts.replace(0, edited); //add the new post accordingly.
                                                                                             snapshot.updateFile();
                                                                                             std::system("cls");
                                                                                             Sleep(500);
@@ -686,7 +687,7 @@ void main(void)
                                                                                     }
                                                                                     else if (selectionToInteger == 8) {
                                                                                         cout << "===================Delete Post=================" << endl;
-                                                                                        
+
                                                                                         string postindex;
                                                                                         cout << "Post to be deleted" << endl;
                                                                                         getline(cin, postindex);
@@ -753,76 +754,64 @@ void main(void)
                                                     // Problem now is that I can't show the Post numbers properly. DK WHY 
                                                     //load posts from others plus yourself.
                                                     //all data copied into sysHashTable.
-                                                    std::system("cls"); 
-                                                    Sleep(500); 
-                                                    SystemHashTable sysHashTable = convertToHashTable(document); 
-                                                    LinkedList<string> usernames = LinkedList<string>(); 
-                                                    LinkedList<string> usernames1 = LinkedList<string>(); 
+                                                    std::system("cls");
+                                                    Sleep(500);
+                                                    SystemHashTable sysHashTable = convertToHashTable(document);
+                                                    LinkedList<string> usernames = LinkedList<string>();
+                                                    LinkedList<string> usernames1 = LinkedList<string>();
                                                     if (document.IsArray()) {
                                                         for (SizeType t = 0; t < document.Size(); t++) {
-                                                            string username = document[t]["Username"].GetString(); 
-                                                            usernames1.add(username); 
+                                                            string username = document[t]["Username"].GetString();
+                                                            usernames1.add(username);
                                                             usernames.add(username);
                                                         }
                                                     }
-												   
-                                                    LinkedList<int> indices = LinkedList<int>(); 
-													LinkedList<Post> post = sysHashTable.get(username).posts;
+                                                    int postNumber = 1;
+                                                    
                                                     for (int i = 0; i < usernames.length(); i++) {
-                                                        LinkedList<Post> post = sysHashTable.get(usernames.get(i)).posts; 
-                                                        if (i != 0) indices.add(post.length()); // ok let me take a look
+                                                        LinkedList<Post> post = sysHashTable.get(usernames.get(i)).posts;
+                                                        /*if (i != 0) indices.add(post.length());*/
                                                         for (int j = 0; j < post.length(); j++) {
-                                                            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl; 
-															// This formula ensures that each post will have a unique number, even if multiple users have posts with the same index.
-                                                            std::cout << "|Post number: " << (i == 0 ? j + 1 : ([&indices, &i] {
-                                                                int numOfElements = indices.length(), sum = 0; 
-                                                                for (int counter = 1; counter < numOfElements - 1; counter++) {
-                                                                    sum += indices.get(i - counter); 
-                                                                }
-                                                                std::cout << sum << std::endl;
-                                                                return sum; 
-                                                            })() + j) << std::endl;
+                                                            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+                                                            std::cout << "|Post number: " << postNumber << std::endl;
                                                             std::cout << "|User: " << usernames1.get(i) << std::endl;
-                                                            std::cout << "|Title: " << post.get(j).title << std::endl; 
+                                                            std::cout << "|Title: " << post.get(j).title << std::endl;
                                                             std::cout << "|Contents: " << post.get(j).contents << std::endl;
-                                                            std::cout << "|Number of Likes: " << post.get(j).noOfLikes << std::endl; 
+                                                            std::cout << "|Number of Likes: " << post.get(j).noOfLikes << std::endl;
                                                             std::cout << "|Number of Thumbs up: " << post.get(j).noOfThumbsUp << std::endl;
-                                                            std::cout << "|Number of comments: " << post.get(j).comment.length() << std::endl; 
+                                                            std::cout << "|Number of comments: " << post.get(j).comment.length() << std::endl;
+                                                            postNumber++;
                                                         }
                                                     }
                                                     std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-                                                    std::cout << std::endl; 
+                                                    std::cout << std::endl;
                                                     for (; ; ) {
-                                                        viewPostMenu(); 
-                                                        std::cout << "Your choice? "; 
-                                                        string what; 
-                                                        getline(cin, what); 
+                                                        viewPostMenu();
+                                                        std::cout << "Your choice? ";
+                                                        string what;
+                                                        getline(cin, what);
                                                         try {
-                                                            int c = atoi(what.c_str()); 
+                                                            int c = atoi(what.c_str());
                                                             if (c == 0) {   //quit to the main menu
-                                                                std::system("cls"); 
-                                                                Sleep(500); 
-                                                                break; 
+                                                                std::system("cls");
+                                                                Sleep(500);
+                                                                break;
                                                             }
                                                             else if (c == 1) {
 
                                                             }
                                                             else if (c == 2) {      //Prompt the user for the post index
-                                                                std::cout << "Please enter post number that you would like to open (Enter 1 to " << ([&indices] {
-                                                                    int largest = 0; 
-                                                                    for (int i = 0; i < indices.length(); i++) {
-                                                                        largest = indices.get(i) > largest ? indices.get(i) : indices.get(i) == largest ? largest : largest; 
-                                                                    }
-                                                                    return largest;
-                                                                })() << ")" << endl;
+                                                                std::cout << "Please enter post number that you would like to open (Enter 1 to " << postNumber - 1 << ")" << endl;
+                                                                string decision;
+                                                                getline(cin, decision);
 
                                                             }
                                                             else {
-                                                                std::cout << "Invalid option please try again!" << std::endl; 
+                                                                std::cout << "Invalid option please try again!" << std::endl;
                                                             }
                                                         }
                                                         catch (exception e) {
-                                                            std::cout << "Invalid option please try again!" << std::endl; 
+                                                            std::cout << "Invalid option please try again!" << std::endl;
                                                         }
                                                     }
                                                 }
@@ -899,9 +888,9 @@ void main(void)
 
                                                         }
                                                     }
-                                                        std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-                                                        std::cout << "______________________________________________________________" << endl;
-                                                        std::cout << "Number of Topics: " << copy.length() << endl;
+                                                    std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+                                                    std::cout << "______________________________________________________________" << endl;
+                                                    std::cout << "Number of Topics: " << copy.length() << endl;
                                                 }
                                                 else if (decision == "6") {
                                                     int targetTopic;
@@ -911,7 +900,7 @@ void main(void)
                                                     int target = targetTopic;
                                                     Post p;
                                                     int arraySize = p.topic.length();
-                                                    int dataArray[] = {1,2,3,4,5};
+                                                    int dataArray[] = { 1,2,3,4,5 };
                                                     int res = search(dataArray, arraySize, target);
                                                     if (res != -1) {
                                                         cout << "The target value: " << target << " is found  " << endl;
@@ -998,12 +987,12 @@ void main(void)
                 string internal = "";
                 if (something.is_open()) {
                     while (getline(something, internal)) {
-                        fileContents.add(internal); 
+                        fileContents.add(internal);
                     }
-                    rapidjson::Document document; 
-                    document.Parse(fileContents.get(0).c_str()); 
+                    rapidjson::Document document;
+                    document.Parse(fileContents.get(0).c_str());
                     SystemHashTable snapshot = convertToHashTable(document);
-                    if(snapshot.contains(newAccountUsername)) {
+                    if (snapshot.contains(newAccountUsername)) {
                         std::cout << "Duplicate username found! Please try entering another username!" << endl;
                         Sleep(1000);
                         goto REDO;
@@ -1018,10 +1007,10 @@ void main(void)
                                 break;
                             }
                             else {
-                                std::system("cls"); 
-                                Sleep(500); 
-                                std::cout << "Sorry! The length of your password must be between 8 and 30 characters!" << std::endl; 
-                                std::cout << "Current length of the password: " << std::to_string(newAccountPassword.length()) << std::endl; 
+                                std::system("cls");
+                                Sleep(500);
+                                std::cout << "Sorry! The length of your password must be between 8 and 30 characters!" << std::endl;
+                                std::cout << "Current length of the password: " << std::to_string(newAccountPassword.length()) << std::endl;
                             }
                         }
                         std::system("cls");
@@ -1119,20 +1108,20 @@ void main(void)
                 //Privacy policy
                 cout << "==================PRIVACY POLICY===================" << endl;
                 cout << "1) No part of this software shall be distributed without prior permission from the developers." << endl;
-                
+
             }
             else {
-                std::cout << "Invalid option please try again!" << std::endl; 
-                Sleep(2000); 
-                std::system("cls"); 
-                Sleep(500); 
+                std::cout << "Invalid option please try again!" << std::endl;
+                Sleep(2000);
+                std::system("cls");
+                Sleep(500);
             }
         }
         catch (exception e) {
-            std::cout << "Invalid option please try again!" << std::endl; 
-            Sleep(2000); 
-            std::system("cls"); 
-            Sleep(500); 
+            std::cout << "Invalid option please try again!" << std::endl;
+            Sleep(2000);
+            std::system("cls");
+            Sleep(500);
         }
     }
 }
