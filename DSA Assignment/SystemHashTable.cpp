@@ -171,6 +171,7 @@ SystemUser& SystemHashTable::get(string key)
 	}
 }
 
+
 void SystemHashTable::updateFile(void) { 
 	rapidjson::Document newJSONDocument;
 	auto& allocator = newJSONDocument.GetAllocator(); 
