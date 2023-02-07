@@ -250,7 +250,8 @@ void main(void)
                                                     Sleep(500);
                                                     string topicTitle = "";
                                                     string topicContents = "";
-                                                    cout << "Please enter the title of your topic: " << endl;
+                                                    cout << "Create new topic: " << endl;
+                                                    cout << "Please enter the title of your new topic: " << endl;
                                                     cout << "Key in 'EXIT' or 'exit' or 'Exit' to exit to the main menu." << endl;
                                                     getline(cin, topicTitle);
                                                     if (topicTitle == "EXIT" || topicTitle == "exit" || topicTitle == "Exit") {
@@ -261,7 +262,7 @@ void main(void)
                                                     else {
                                                         std::system("cls");
                                                         Sleep(500);
-                                                        cout << "Please enter the contents of your topic: " << endl;
+                                                        cout << "Please enter the contents of your new topic: " << endl;
                                                         getline(cin, topicContents);
                                                         cout << "YOUR TOPIC: " << endl;
                                                         cout << "=====================================================" << endl;
@@ -749,6 +750,7 @@ void main(void)
                                                 }
                                                 else if (decision == "4") {
                                                     //to implement
+                                                    // Problem now is that I can't show the Post numbers properly. DK WHY 
                                                     //load posts from others plus yourself.
                                                     //all data copied into sysHashTable.
                                                     std::system("cls"); 
@@ -763,18 +765,21 @@ void main(void)
                                                             usernames.add(username);
                                                         }
                                                     }
+												   
                                                     LinkedList<int> indices = LinkedList<int>(); 
+													LinkedList<Post> post = sysHashTable.get(username).posts;
                                                     for (int i = 0; i < usernames.length(); i++) {
                                                         LinkedList<Post> post = sysHashTable.get(usernames.get(i)).posts; 
-                                                        if (i != 0) indices.add(post.length()); 
+                                                        if (i != 0) indices.add(post.length()); // ok let me take a look
                                                         for (int j = 0; j < post.length(); j++) {
                                                             std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl; 
+															// This formula ensures that each post will have a unique number, even if multiple users have posts with the same index.
                                                             std::cout << "|Post number: " << (i == 0 ? j + 1 : ([&indices, &i] {
                                                                 int numOfElements = indices.length(), sum = 0; 
                                                                 for (int counter = 1; counter < numOfElements - 1; counter++) {
                                                                     sum += indices.get(i - counter); 
                                                                 }
-                                                                std::cout << sum << std::endl; 
+                                                                std::cout << sum << std::endl;
                                                                 return sum; 
                                                             })() + j) << std::endl;
                                                             std::cout << "|User: " << usernames1.get(i) << std::endl;
@@ -1021,82 +1026,8 @@ void main(void)
                         }
                         std::system("cls");
                         Sleep(500);
-                        for (; ; ) {
-                            std::cout << "Would you like to set a security question? " << std::endl;
-                            std::cout << "===========================================" << std::endl;
-                            std::cout << "[1] NO" << std::endl;
-                            std::cout << "[2] YES" << std::endl;
-                            std::cout << "===========================================" << std::endl;
-                            std::cout << "Your choice? ";
-                            string option = "";
-                            getline(cin, option);
-                            try {
-                                int b = atoi(option.c_str());
-                                if (b == 1) {
-                                    std::system("cls");
-                                    Sleep(500);
-                                    std::cout << "Successfully registered your account! Please try to log into the std::system using your new username and password" << endl;
-                                    Sleep(2000);
-                                    std::system("cls");
-                                    snapshot.add(newAccountUsername, newAccountPassword);
-                                    snapshot.updateFile();
-                                    break; 
-                                }
-                                else if (b == 2) {
-                                    for (; ; ) {
-                                        std::system("cls");
-                                        Sleep(500);
-                                        std::cout << "========================================================" << std::endl;
-                                        std::cout << "[1] Create your own security question" << std::endl;
-                                        std::cout << "[2] Select from a list of security questions" << std::endl;
-                                        std::cout << "========================================================" << std::endl;
-                                        std::cout << "Your choice? ";
-                                        string selection = "";
-                                        getline(cin, selection);
-                                        try {
-                                            int c = atoi(selection.c_str());
-                                            if (c == 1) {
-                                                std::cout << "Enter your security question: ";
-                                                string securityQuestion = "";
-                                                getline(cin, securityQuestion);
-                                                std::cout << std::endl; 
-                                                std::cout << "Provide an answer to your security question: "; 
-                                                string securityQuestionAnswer = ""; 
-                                                getline(cin, securityQuestionAnswer); 
-                                                snapshot.add(newAccountUsername, newAccountPassword); 
-                                                snapshot.updateFile(); 
-                                                //read from file. 
-                                                ifstream GetSecurityQuestions("security.dat");
-
-                                            }
-                                            else if (c == 2) {
-                                                std::cout << "==================================================================================" << std::endl;
-                                                std::cout << "[1] What city were you born in?" << std::endl; 
-                                                std::cout << "[2] What is your oldest sibling’s middle name?" << std::endl; 
-                                                std::cout << "[3] What was the first concert you attended?" << std::endl; 
-                                                std::cout << "[4] What was the make and model of your first car?" << std::endl; 
-                                                std::cout << "[5] What was your childhood nickname?" << std::endl; 
-                                                std::cout << "[6] What street did you live on in third grade?" << std::endl; 
-                                                std::cout << "[7] What school did you attend for sixth grade?" << std::endl; 
-                                                std::cout << "[8] What was the last name of your third grade teacher?" << std::endl; 
-                                                std::cout << "[9] What was your childhood phone number including area code? (e.g., 000-000-0000)" << std::endl; 
-                                                std::cout << "[10] What was the name of your elementary / primary school?" << std::endl; 
-                                                std::cout << "[11] What is the name of the company of your first job?" << std::endl; 
-                                                std::cout << "[12] What was your dream job as a child?" << std::endl; 
-                                                std::cout << "[13] " << std::endl; 
-                                                std::cout << "==================================================================================" << std::endl;
-                                            }
-                                        }
-                                        catch (exception e) {
-                                            std::cout << "Invalid option. Please try again!" << std::endl;
-                                        }
-                                    } 
-                                }
-                            }
-                            catch (exception e) {
-                                std::cout << "Invalid option. Please try again!" << std::endl; 
-                            }
-                        } 
+                        snapshot.add(newAccountUsername, newAccountPassword);
+                        snapshot.updateFile();
                     }
                 }
                 else {   //if file does not exist
@@ -1124,18 +1055,65 @@ void main(void)
             else if (a == 4) {
                 //Reset password
                 //for security purposes we are going to use another file to write and store the security question. 
-                ifstream SecurityQn("security.dat");
-                LinkedList<string> fileContents = LinkedList<string>(); 
-                string temporalStorage = ""; 
-                while (getline(SecurityQn, temporalStorage)) {
-                    fileContents.add(temporalStorage); 
-                }
-
-                system("cls");
-                Sleep(500);
-                cout << "Please enter the username of your account: " << endl;
-                string usernameReset = "";
-
+                for (; ; ) {
+                    ifstream something("post.dat");                             //Read the data from post.dat.
+                    LinkedList<string> fileContents = LinkedList<string>();
+                    string internal = "";
+                    rapidjson::Document document;
+                    if (something.is_open()) {
+                        while (getline(something, internal)) {
+                            fileContents.add(internal);
+                        }
+                    }
+                    document.Parse(fileContents.get(0).c_str());
+                    system("cls");
+                    Sleep(500);
+                    string usernameReset = "";
+                    std::cout << "Please enter the username of your account: "; 
+                    getline(cin, usernameReset); 
+                    SystemHashTable sysHashTable = convertToHashTable(document); 
+                    if (sysHashTable.contains(usernameReset)) {
+                        for (; ; ) {
+                            std::system("cls");
+                            Sleep(500);
+                            string oldPassword = "";
+                            std::cout << "Please enter the old password for your account: ";
+                            getline(cin, oldPassword);
+                            if (sysHashTable.get(usernameReset).password == oldPassword) {
+                                for (; ; ) {
+                                    std::system("cls");
+                                    Sleep(500);
+                                    string newPassword = "";
+                                    std::cout << "Please enter your new password: ";
+                                    getline(cin, newPassword);
+                                    if (newPassword.length() >= 8 && newPassword.length() < 30) {
+                                        sysHashTable.get(usernameReset).password = newPassword;
+                                        sysHashTable.updateFile();
+                                        std::system("cls");
+                                        Sleep(500);
+                                        std::cout << "The password has been successfully updated. Please try logging in again!" << std::endl;
+                                        Sleep(2000);
+                                        std::system("cls");
+                                        break;
+                                    }
+                                }
+                                break; 
+                            }
+                            else {
+                                std::system("cls");
+                                Sleep(500);
+                                std::cout << "The password is not correct." << std::endl;
+                                Sleep(2000);
+                            }
+                        } 
+                        break; 
+                    }
+                    else {
+                        std::system("cls"); 
+                        std::cout << "Username is not found. Please try again" << std::endl; 
+                        Sleep(2000); 
+                    }
+                } 
             }
             else if (a == 5) {
                 //Privacy policy
